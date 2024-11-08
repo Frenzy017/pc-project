@@ -1,19 +1,28 @@
 import java.util.*;
 
 public class Store {
+    private final ArrayList<Computer> computers;
+    private final ArrayList<Computer> initialComputers = new ArrayList<>();
     private ArrayList<User> usersList = new ArrayList<>();
-    private List<Computer> computers = new ArrayList<>();
-    private Cart cart = new Cart();
+
+    private Cart cart = new Cart(0, 0);
+    Utility utility = new Utility();
 
     Scanner scanner = new Scanner(System.in);
 
+    // TASKS FOR TODAY
+    // 1. Create a way to track which user is logged in
+    // 2. Create an admin account to log in with and modify the computer's arraylist with own settings
+    // 3. Make a way that the user deposits money in cart interface
+
     public Store() {
-        this.computers = Arrays.asList(
+        this.computers = new ArrayList<>(Arrays.asList(
                 new Computer("Vortex", "NVIDIA RTX 4090", 32, "Intel Core i9-13900K", 1, 7000),
                 new Computer("Titan", "NVIDIA RTX 4080", 16, "AMD Ryzen 9 7900X", 2, 6200),
                 new Computer("Phantom", "NVIDIA RTX 4070 Ti", 32, "Intel Core i7-13700KF", 3, 5600),
                 new Computer("Blaze", "NVIDIA RTX 4060", 16, "AMD Ryzen 7 7800X", 4, 5000)
-        );
+        ));
+        this.initialComputers.addAll(computers);
     }
 
     public void start() {
@@ -36,13 +45,21 @@ public class Store {
                 }
                 case "login" -> {
                     loginUser();
-                    Utility.printStoreInterface();
+                    utility.printStoreInterface();
                 }
                 case "show" -> {
                     printComputers();
                     selectComputer();
                 }
-                case "cart" -> cart.printCart();
+                case "cart" -> {
+                    cart.printCart();
+                    utility.printCartInterface();
+                }
+                case "clear" -> {
+                    cart.clearCart();
+                    cart.resetComputers(initialComputers, computers);
+                    utility.printCartInterface();
+                }
                 case "logout" -> logout();
                 default -> retry();
             }
@@ -50,10 +67,10 @@ public class Store {
     }
 
     public void createUser() {
-        String username = Utility.getUsername();
-        String password = Utility.getPassword();
+        String username = utility.getUsername();
+        String password = utility.getPassword();
 
-        usersList.add(new User(username, password, 123));
+        usersList.add(new User(username, password, 123, 0));
 
         System.out.println();
         System.out.println("Account created successfully!");
@@ -61,8 +78,8 @@ public class Store {
     }
 
     public void loginUser() {
-        String username = Utility.getUsername();
-        String password = Utility.getPassword();
+        String username = utility.getUsername();
+        String password = utility.getPassword();
 
         boolean validLogin = false;
 
@@ -113,18 +130,16 @@ public class Store {
                 + selectedComputer.name + " Computer" + " with the Specifications: " + selectedComputer.graphicCard + ", "
                 + selectedComputer.ram + "GB RAM, " + selectedComputer.processor + ", " + "Price: " + selectedComputer.price + "$"
         );
-
         System.out.println();
         System.out.print("Do you want to add this computer to your cart? [Yes / No] ");
         String command = scanner.nextLine();
 
         if (command.equalsIgnoreCase("Yes")) {
-            Cart cart = new Cart();
             cart.setCart(selectedComputer);
-            Utility.printStoreInterface();
-
+            computers.remove(selectedComputer);
+            utility.printStoreInterface();
         } else if (command.equalsIgnoreCase("No")) {
-            Utility.printStoreInterface();
+            utility.printStoreInterface();
         }
     }
 
@@ -144,7 +159,6 @@ public class Store {
         System.out.println();
         start();
     }
-
 }
 
 
