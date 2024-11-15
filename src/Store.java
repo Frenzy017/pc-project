@@ -3,17 +3,16 @@ import java.util.*;
 public class Store {
     private final ArrayList<Computer> computers;
     private final ArrayList<Computer> initialComputers = new ArrayList<>();
-    private ArrayList<User> usersList = new ArrayList<>();
+    private final ArrayList<User> usersList = new ArrayList<>();
+    private boolean isAdmin;
+    private User user;
 
-    private Cart cart = new Cart(0, 0);
+    Cart cart = new Cart();
     Utility utility = new Utility();
-
     Scanner scanner = new Scanner(System.in);
 
-    // TASKS FOR TODAY
-    // 1. Create a way to track which user is logged in
-    // 2. Create an admin account to log in with and modify the computer's arraylist with own settings
-    // 3. Make a way that the user deposits money in cart interface
+    // isAdmin is currently being set as instance variable in the file,
+    // TO DO: Try to create a way where you can get the isAdmin flag from the usersList;
 
     public Store() {
         this.computers = new ArrayList<>(Arrays.asList(
@@ -41,7 +40,7 @@ public class Store {
             switch (command) {
                 case "create" -> {
                     createUser();
-                    returnToMenu();
+                    start();
                 }
                 case "login" -> {
                     loginUser();
@@ -49,19 +48,31 @@ public class Store {
                 }
                 case "show" -> {
                     printComputers();
-                    selectComputer();
+                    handleComputerSelection();
                 }
+                case "logout" -> logout();
                 case "cart" -> {
                     cart.printCart();
                     utility.printCartInterface();
+
+                    String cartCommand = scanner.nextLine();
+
+                    switch (cartCommand) {
+                        case "clear" -> {
+                            cart.clearCart();
+                            cart.resetStore(this);
+                            utility.printCartInterface();
+                        }
+                        case "back" -> utility.printStoreInterface();
+
+                        case "deposit" -> user.depositMoney();
+
+                        case "logout" -> logout();
+
+                        default -> returnToInterface();
+                    }
                 }
-                case "clear" -> {
-                    cart.clearCart();
-                    cart.resetComputers(initialComputers, computers);
-                    utility.printCartInterface();
-                }
-                case "logout" -> logout();
-                default -> retry();
+                default -> returnToStart();
             }
         }
     }
@@ -70,7 +81,14 @@ public class Store {
         String username = utility.getUsername();
         String password = utility.getPassword();
 
-        usersList.add(new User(username, password, 123, 0));
+        isAdmin = username.equals("admin123") && password.equals("admin123");
+
+        usersList.add(new User(username, password, 123, 0, isAdmin));
+
+        for (User user : usersList) {
+            this.user = user;
+            cart.setUser(user);
+        }
 
         System.out.println();
         System.out.println("Account created successfully!");
@@ -90,74 +108,121 @@ public class Store {
             }
         }
         if (validLogin) {
-            System.out.println();
+            utility.println();
             System.out.println("You have successfully logged in!");
         } else {
-            System.out.println();
+            utility.println();
             System.out.println("Sorry wrong input, please try again!");
             loginUser();
         }
     }
 
+    public void logout() {
+        System.out.println("You have successfully logged out!");
+        utility.println();
+        start();
+    }
+
+    public void handleComputerSelection() {
+        if (isAdmin) {
+            handleComputerSelectionAsAdmin();
+        } else {
+            handleComputerSelectionAsUser();
+        }
+    }
+
+    public void handleComputerSelectionAsUser() {
+        Computer selectedComputer = utility.selectComputer(computers, scanner);
+
+        if (selectedComputer == null) {
+            handleComputerSelectionAsUser();
+            return;
+        }
+
+        System.out.print("Do you want to add this computer to your cart? [Yes / No] ");
+        String command = scanner.nextLine();
+
+        if (command.equalsIgnoreCase("Yes")) {
+            cart.addToCart(selectedComputer);
+            computers.remove(selectedComputer);
+            utility.printStoreInterface();
+        } else if (command.equalsIgnoreCase("No")) {
+            utility.printStoreInterface();
+        } else {
+            utility.invalidCommand();
+        }
+    }
+
+    public void handleComputerSelectionAsAdmin() {
+        Computer selectedComputer = utility.selectComputer(computers, scanner);
+
+        if (selectedComputer == null) {
+            handleComputerSelectionAsAdmin();
+            return;
+        }
+
+        utility.printAdminOptions();
+
+        String command = scanner.nextLine();
+
+        if (command.equalsIgnoreCase("Add")) {
+            cart.addToCart(selectedComputer);
+            computers.remove(selectedComputer);
+            utility.printStoreInterface();
+        } else if (command.equalsIgnoreCase("Modify")) {
+            int index = 1;
+            utility.printModificationOptions();
+
+            int modify = scanner.nextInt();
+
+            switch (modify) {
+                case 1 -> {
+                    utility.println();
+                    System.out.print("Please type what name do you want to rename it to: ");
+                    scanner.nextLine();
+                    selectedComputer.name = scanner.nextLine();
+                }
+            }
+        }
+    }
+
     public void printComputers() {
-        System.out.println();
+        utility.println();
         System.out.println("Here are the available computers:");
 
         int index = 1;
 
         for (Computer computer : computers) {
-            System.out.println(index + ". Computer: " + computer.name + ", Specifications: " + computer.graphicCard + ", " + computer.ram + "GB RAM, " + computer.processor + ", " + "Price: " + computer.price + "$");
+            System.out.println(
+                    index + ". Computer: "
+                            + computer.name + ", Specifications: "
+                            + computer.graphicCard + ", "
+                            + computer.ram + "GB RAM, "
+                            + computer.processor + ", "
+                            + "Price: " + computer.price + "$");
             index++;
         }
     }
 
-    public void selectComputer() {
-        System.out.println();
-        System.out.print("To select a computer, please type its number: ");
-
-        int selectedNumber = scanner.nextInt();
-        scanner.nextLine();
-
-        if (selectedNumber < 1 || selectedNumber > computers.size()) {
-            System.out.println("Invalid selection. Please try again.");
-            selectComputer();
-            return;
-        }
-
-        Computer selectedComputer = computers.get(selectedNumber - 1);
-
-        System.out.println("You have selected the "
-                + selectedComputer.name + " Computer" + " with the Specifications: " + selectedComputer.graphicCard + ", "
-                + selectedComputer.ram + "GB RAM, " + selectedComputer.processor + ", " + "Price: " + selectedComputer.price + "$"
-        );
-        System.out.println();
-        System.out.print("Do you want to add this computer to your cart? [Yes / No] ");
-        String command = scanner.nextLine();
-
-        if (command.equalsIgnoreCase("Yes")) {
-            cart.setCart(selectedComputer);
-            computers.remove(selectedComputer);
-            utility.printStoreInterface();
-        } else if (command.equalsIgnoreCase("No")) {
-            utility.printStoreInterface();
-        }
-    }
-
-    public void retry() {
-        System.out.println();
-        System.out.println("Invalid command, please try again! ");
-        System.out.println();
+    public void returnToStart() {
+        utility.println();
+        utility.invalidCommand();
+        utility.println();
         start();
     }
 
-    public void returnToMenu() {
-        start();
+    public void returnToInterface() {
+        utility.println();
+        utility.invalidCommand();
+        utility.printCartInterface();
     }
 
-    public void logout() {
-        System.out.println("You have successfully logged out!");
-        System.out.println();
-        start();
+    public List<Computer> getComputers() {
+        return computers;
+    }
+
+    public List<Computer> getInitialComputers() {
+        return initialComputers;
     }
 }
 

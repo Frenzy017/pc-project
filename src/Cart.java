@@ -1,20 +1,20 @@
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Scanner;
 
 public class Cart {
-    private ArrayList<Computer> cart = new ArrayList<>();
+    private final Scanner scanner = new Scanner(System.in);
+    private final ArrayList<Computer> cart = new ArrayList<>();
     private int totalPrice;
-    private int quantity;
+    private User user;
 
-    public Cart(int totalPrice, int quantity) {
-        this.totalPrice = totalPrice;
-        this.quantity = quantity;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public void setCart(Computer computer) {
+    public void addToCart(Computer computer) {
         cart.add(computer);
+
         totalPrice += computer.price;
-        quantity++;
 
         System.out.println();
         System.out.println("You have successfully put your computer: " + computer + " in your cart!");
@@ -22,12 +22,13 @@ public class Cart {
     }
 
     public void printCart() {
-        System.out.println("Currently you have " + quantity + " computers in your cart.");
+        System.out.println("Currently you have " + cart.size() + " computers in your cart.");
+        System.out.println("Your current balance is: " + user.getBalance() + "$.");
         System.out.println("Total price of your cart is: " + totalPrice + "$.");
         System.out.println("Here are the computers in your cart: ");
         System.out.println();
 
-        if (cart == null || cart.isEmpty()) {
+        if (cart.isEmpty()) {
             System.out.println("Currently there are no items in the cart, please select items to proceed further.");
         } else {
             for (Computer computer : cart) {
@@ -37,14 +38,13 @@ public class Cart {
     }
 
     public void clearCart() {
-        quantity = 0;
         totalPrice = 0;
         cart.clear();
     }
 
-    public void resetComputers(List<Computer> initialComputers, List<Computer> computers) {
-        computers.clear();
-        computers.addAll(initialComputers);
+    public void resetStore(Store store) {
+        store.getComputers().clear();
+        store.getComputers().addAll(store.getInitialComputers());
     }
 
 }

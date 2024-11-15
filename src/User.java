@@ -5,23 +5,16 @@ public class User {
     private String password;
     private long id;
     private int balance;
+    private boolean isAdmin;
 
     Scanner scanner = new Scanner(System.in);
 
-    public User(String username, String password, long id, int balance) {
+    public User(String username, String password, long id, int balance, boolean isAdmin) {
         this.username = username;
         this.password = password;
         this.id = id;
         this.balance = balance;
-
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+        this.isAdmin = isAdmin;
     }
 
     public String getUsername() {
@@ -36,13 +29,33 @@ public class User {
         return this.balance;
     }
 
-    public void depositMoney() {
-        if (balance == 0) {
-            System.out.println("Please deposit some money:");
-            int money = scanner.nextInt();
-
-
-        }
+    public boolean getAdmin() {
+        return this.isAdmin;
     }
 
+    public void setBalance(int balance) {
+        this.balance = balance;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void depositMoney() {
+        System.out.println("Please enter any amount to deposit: ");
+
+        int amount = scanner.nextInt();
+
+        if (amount > 0) {
+            setBalance(getBalance() + amount);
+            System.out.println("You have successfully put: " + amount + " $ in your account!");
+        } else {
+            System.out.println("Please enter a positive amount!");
+            depositMoney();
+        }
+    }
 }
