@@ -9,5 +9,5 @@ public class Admin {
     // modify computer object
     // delete computer object
     // view all users
-    // remove an user
+    // remove a user
 }
