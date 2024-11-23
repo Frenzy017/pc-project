@@ -1,13 +1,13 @@
-import java.io.FileNotFoundException;
 import java.util.*;
 
 public class Store {
     private final ArrayList<Computer> computers;
     private final ArrayList<Computer> initialComputers = new ArrayList<>();
     private final ArrayList<User> usersList = new ArrayList<>();
-    private final Admin admin = new Admin();
+    private final ComputerHandler computerHandler = new ComputerHandler();
 
     private boolean isAdmin;
+    private boolean isLogout;
     private User user;
 
     Scanner scanner = new Scanner(System.in);
@@ -36,11 +36,10 @@ public class Store {
         return usersList;
     }
 
-
-    public void start() throws FileNotFoundException {
+    public void start()  {
         utility.printAccountOptions();
 
-        while (true) {
+        while (!isLogout) {
             String command = scanner.nextLine();
 
             switch (command) {
@@ -80,13 +79,13 @@ public class Store {
         }
     }
 
-    public void createUser() throws FileNotFoundException {
-        String username = utility.getUsername();
-        String password = utility.getPassword();
+    public void createUser()  {
+        String username = utility.setUsername();
+        String password = utility.setPassword();
 
         isAdmin = username.equals("admin123") && password.equals("admin123");
 
-        usersList.add(new User(username, password, 123, 0, isAdmin));
+        usersList.add(new User(username, password, 123, 0));
 
         for (User user : usersList) {
             this.user = user;
@@ -102,31 +101,56 @@ public class Store {
     }
 
     public void loginUser() {
-        String username = utility.getUsername();
-        String password = utility.getPassword();
+        String usernameToLogin = utility.getUsername();
+        String passwordToLogin = utility.getPassword();
 
         boolean validLogin = false;
 
         for (User user : usersList) {
-            if (Objects.equals(user.getUsername(), username) && Objects.equals(user.getPassword(), password)) {
+            if (Objects.equals(user.getUsername(), usernameToLogin) && Objects.equals(user.getPassword(), passwordToLogin)) {
                 validLogin = true;
                 break;
             }
         }
+
+        System.out.println();
+
         if (validLogin) {
-            utility.println();
             System.out.println("You have successfully logged in!");
         } else {
-            utility.println();
             System.out.println("Sorry wrong input, please try again!");
             loginUser();
         }
     }
 
-    public void logout() throws FileNotFoundException {
+    public void logout()  {
         System.out.println("You have successfully logged out!");
-        utility.println();
-        start();
+        System.out.println();
+        isLogout = true;
+    }
+
+    public Computer selectComputer() {
+        System.out.println();
+        System.out.print("To select a computer, please type its number: ");
+
+        int selectedNumber = scanner.nextInt();
+        scanner.nextLine();
+
+        if (selectedNumber < 1 || selectedNumber > computers.size()) {
+            System.out.println("Invalid selection. Please try again.");
+            return null;
+        }
+
+        Computer selectedComputer = computers.get(selectedNumber - 1);
+
+        System.out.println(
+                "You have selected the "
+                        + selectedComputer.name + " Computer" + " with the Specifications: " + selectedComputer.graphicCard + ", "
+                        + selectedComputer.ram + "GB RAM, " + selectedComputer.processor + ", " + "Price: " + selectedComputer.price + "$"
+        );
+        System.out.println();
+
+        return selectedComputer;
     }
 
     public void handleComputerSelection() {
@@ -141,12 +165,7 @@ public class Store {
     }
 
     public void handleComputerSelectionAsUser() {
-        Computer selectedComputer = utility.selectComputer(computers, scanner);
-
-        if (selectedComputer == null) {
-            handleComputerSelectionAsUser();
-            return;
-        }
+        Computer selectedComputer = selectComputer();
 
         System.out.print("Do you want to add this computer to your cart? [Yes / No] ");
         String command = scanner.nextLine();
@@ -163,12 +182,7 @@ public class Store {
     }
 
     public void handleComputerSelectionAsAdmin() {
-        Computer selectedComputer = utility.selectComputer(computers, scanner);
-
-        if (selectedComputer == null) {
-            handleComputerSelectionAsAdmin();
-            return;
-        }
+        Computer selectedComputer = selectComputer();
 
         utility.printAdminOptions();
 
@@ -181,47 +195,43 @@ public class Store {
                 computers.remove(selectedComputer);
                 utility.printStoreInterface();
             }
-            case "create" -> admin.createComputer(this);
-            case "modify" -> admin.modifyComputer(selectedComputer);
+            case "create" -> computerHandler.createComputer(this);
+            case "modify" -> computerHandler.modifyComputer(selectedComputer);
             case "delete" -> {
                 printComputers();
-                admin.deleteComputer(this);
+                computerHandler.deleteComputer(this);
             }
         }
     }
 
     public void printComputers() {
-        utility.println();
+        System.out.println();
         System.out.println("Here are the available computers:");
 
-        int index = 1;
-
-        for (Computer computer : computers) {
+        for (int i = 1; i <= computers.size(); i++) {
+            Computer computer = computers.get(i - 1);
             System.out.println(
-                    index + ". Computer: "
+                    i + ". Computer: "
                             + computer.name + ", Specifications: "
                             + computer.graphicCard + ", "
                             + computer.ram + "GB RAM, "
                             + computer.processor + ", "
                             + "Price: " + computer.price + "$");
-            index++;
         }
     }
 
-    public void returnToStart() throws FileNotFoundException {
-        utility.println();
+    public void returnToStart() {
+        System.out.println();
         utility.invalidCommand();
-        utility.println();
+        System.out.println();
         start();
     }
 
     public void returnToInterface() {
-        utility.println();
+        System.out.println();
         utility.invalidCommand();
         utility.printCartInterface();
     }
-
-
 }
 
 

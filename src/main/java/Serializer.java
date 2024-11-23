@@ -29,7 +29,7 @@ public class Serializer {
             out.close();
             fileOut.close();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
@@ -44,7 +44,6 @@ public class Serializer {
             file.close();
 
             System.out.println("Object has been deserialized ");
-
 
         } catch (IOException e) {
             System.out.println("IOException is caught");

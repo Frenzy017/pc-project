@@ -3,21 +3,6 @@ import java.util.Scanner;
 public class Utility {
     private static final Scanner scanner = new Scanner(System.in);
 
-    public String getUsername() {
-        System.out.print("Please enter an username: ");
-        return scanner.nextLine();
-    }
-
-    public String getPassword() {
-        System.out.print("Please enter a password: ");
-        return scanner.nextLine();
-    }
-
-    public void invalidCommand() {
-        System.out.println("Invalid command, please try again! ");
-    }
-
-
     public void printSuccessfulCommand() {
         System.out.println();
         System.out.println("Success!");
@@ -100,5 +85,29 @@ public class Utility {
 
         System.out.print("Choose a command before you continue: ");
         System.out.print("");
+    }
+
+    public void invalidCommand() {
+        System.out.println("Invalid command, please try again! ");
+    }
+
+    public String setUsername() {
+        System.out.print("Please enter an username: ");
+        return scanner.nextLine();
+    }
+
+    public String setPassword() {
+        System.out.print("Please enter a password: ");
+        return scanner.nextLine();
+    }
+
+    public String getUsername() {
+        System.out.print("Please enter an username to log in: ");
+        return scanner.nextLine();
+    }
+
+    public String getPassword() {
+        System.out.print("Please enter a password to log in: ");
+        return scanner.nextLine();
     }
 }

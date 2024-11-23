@@ -22,5 +22,4 @@ public class Computer implements Serializable {
     public String toString() {
         return name + ", with the Specifications: " + graphicCard + ", " + ram + "GB RAM, " + processor + ", Price: " + price + "$";
     }
-
 }

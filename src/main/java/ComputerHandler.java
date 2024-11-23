@@ -18,7 +18,7 @@ public class ComputerHandler {
 
         switch (modifyCommand) {
             case 1 -> {
-                utility.println();
+                System.out.println();
                 System.out.print("Please type what name do you want to rename your PC to: ");
                 scanner.nextLine();
                 selectedComputer.name = scanner.nextLine();
@@ -26,7 +26,7 @@ public class ComputerHandler {
                 utility.printAdminOptions();
             }
             case 2 -> {
-                utility.println();
+                System.out.println();
                 System.out.print("Please type what model do you want to change your graphic card to: ");
                 scanner.nextLine();
                 selectedComputer.graphicCard = scanner.nextLine();
@@ -34,7 +34,7 @@ public class ComputerHandler {
                 utility.printAdminOptions();
             }
             case 3 -> {
-                utility.println();
+                System.out.println();
                 System.out.print("Please type what size do you want to change your RAM to: ");
                 scanner.nextLine();
                 selectedComputer.ram = scanner.nextInt();
@@ -42,7 +42,7 @@ public class ComputerHandler {
                 utility.printAdminOptions();
             }
             case 4 -> {
-                utility.println();
+                System.out.println();
                 System.out.print("Please type what model do you want to change your processor to: ");
                 scanner.nextLine();
                 selectedComputer.processor = scanner.nextLine();
@@ -50,7 +50,7 @@ public class ComputerHandler {
                 utility.printAdminOptions();
             }
             case 5 -> {
-                utility.println();
+                System.out.println();
                 System.out.print("Please type what price do you want to set your PC to: ");
                 scanner.nextLine();
                 selectedComputer.price = scanner.nextInt();
