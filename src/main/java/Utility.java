@@ -18,9 +18,6 @@ public class Utility {
         System.out.println("Invalid command, please try again! ");
     }
 
-    public void println() {
-        System.out.println();
-    }
 
     public void printSuccessfulCommand() {
         System.out.println();
@@ -104,29 +101,5 @@ public class Utility {
 
         System.out.print("Choose a command before you continue: ");
         System.out.print("");
-    }
-
-    public Computer selectComputer(ArrayList<Computer> computers, Scanner scanner) {
-        println();
-        System.out.print("To select a computer, please type its number: ");
-
-        int selectedNumber = scanner.nextInt();
-        scanner.nextLine();
-
-        if (selectedNumber < 1 || selectedNumber > computers.size()) {
-            System.out.println("Invalid selection. Please try again.");
-            return null;
-        }
-
-        Computer selectedComputer = computers.get(selectedNumber - 1);
-
-        System.out.println(
-                "You have selected the "
-                        + selectedComputer.name + " Computer" + " with the Specifications: " + selectedComputer.graphicCard + ", "
-                        + selectedComputer.ram + "GB RAM, " + selectedComputer.processor + ", " + "Price: " + selectedComputer.price + "$"
-        );
-        println();
-
-        return selectedComputer;
     }
 }
