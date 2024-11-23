@@ -1,13 +1,11 @@
 import java.util.List;
 import java.util.Scanner;
 
-public class Admin {
+public class ComputerHandler {
     private final Scanner scanner = new Scanner(System.in);
     private final Utility utility = new Utility();
 
-
     public void modifyComputer(Computer selectedComputer) {
-        int index = 1;
         utility.printModificationOptions();
 
         int modifyCommand = scanner.nextInt();
@@ -72,14 +70,14 @@ public class Admin {
 
         System.out.print("Enter RAM size (GB): ");
         int ram = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
+        scanner.nextLine();
 
         System.out.print("Enter processor: ");
         String processor = scanner.nextLine();
 
         System.out.print("Enter price: ");
         int price = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
+        scanner.nextLine();
 
         Computer newComputer = new Computer(name, graphicCard, ram, processor, store.getComputers().size() + 1, price);
         store.getComputers().add(newComputer);
