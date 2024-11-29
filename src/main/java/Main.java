@@ -1,7 +1,5 @@
-import java.io.FileNotFoundException;
-
 public class Main {
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args)  {
         Store store = new Store();
         Utility utility = new Utility();
 
