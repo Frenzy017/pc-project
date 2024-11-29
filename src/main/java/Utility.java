@@ -1,11 +1,15 @@
 import java.util.Scanner;
 
 public class Utility {
-    private static final Scanner scanner = new Scanner(System.in);
+    static Scanner scanner = new Scanner(System.in);
 
     public void printSuccessfulCommand() {
         System.out.println();
         System.out.println("Success!");
+    }
+
+    public void invalidCommand() {
+        System.out.println("Invalid command, please try again! ");
     }
 
     public void printAccountOptions() {
@@ -50,7 +54,40 @@ public class Utility {
         System.out.println("║ Items in cart --> [cart]               ║");
         System.out.println("║ Clear cart --> [clear]                 ║");
         System.out.println("║ Deposit money --> [deposit]            ║");
+        System.out.println("║ Purchase products --> [purchase]       ║");
         System.out.println("║ Log out --> [logout]                   ║");
+        System.out.println("╚════════════════════════════════════════╝");
+        System.out.println();
+
+        System.out.print("Choose a command before you continue: ");
+        System.out.print("");
+    }
+
+    public void printAdminStoreInterface() {
+        System.out.println();
+        System.out.println("╔════════════════════════════════════════╗");
+        System.out.println("║        Admin PC Store Interface        ║");
+        System.out.println("╠════════════════════════════════════════╣");
+        System.out.println("║ Available items --> [show]             ║");
+        System.out.println("║ Cart --> [cart]                        ║");
+        System.out.println("║ View all users --> [view]              ║");
+        System.out.println("║ Logout --> [logout]                    ║");
+        System.out.println("╚════════════════════════════════════════╝");
+        System.out.println();
+
+        System.out.print("Choose a command before you continue: ");
+        System.out.print("");
+    }
+
+    public void printAdminComputerOptions() {
+        System.out.println("╔════════════════════════════════════════╗");
+        System.out.println("║          Admin Computer Options        ║");
+        System.out.println("╠════════════════════════════════════════╣");
+        System.out.println("║ Add computer to cart --> [add]         ║");
+        System.out.println("║ Create a new computer object --> [new] ║");
+        System.out.println("║ Modify computer object --> [modify]    ║");
+        System.out.println("║ Delete computer object --> [delete]    ║");
+        System.out.println("║ Return to main menu --> [back]         ║");
         System.out.println("╚════════════════════════════════════════╝");
         System.out.println();
 
@@ -67,28 +104,6 @@ public class Utility {
         System.out.println("5. Price");
 
         System.out.print("Please enter the number which corresponds with the value you want to modify: ");
-    }
-
-    public void printAdminOptions() {
-        System.out.println("╔════════════════════════════════════════╗");
-        System.out.println("║          Admin Cart Interface          ║");
-        System.out.println("╠════════════════════════════════════════╣");
-        System.out.println("║ Return to main menu --> [back]         ║");
-        System.out.println("║ Add computer to cart --> [add]         ║");
-        System.out.println("║ Create a new computer object --> [new] ║");
-        System.out.println("║ Modify computer object --> [modify]    ║");
-        System.out.println("║ Delete computer object --> [delete]    ║");
-        System.out.println("║ View all users --> [view]              ║");
-        System.out.println("║ Remove an user --> [remove]            ║");
-        System.out.println("╚════════════════════════════════════════╝");
-        System.out.println();
-
-        System.out.print("Choose a command before you continue: ");
-        System.out.print("");
-    }
-
-    public void invalidCommand() {
-        System.out.println("Invalid command, please try again! ");
     }
 
     public String setUsername() {
