@@ -1,5 +1,6 @@
 import java.util.List;
 import java.util.Scanner;
+import java.util.UUID;
 
 public class ComputerHandler {
     private final Scanner scanner = new Scanner(System.in);
@@ -16,6 +17,8 @@ public class ComputerHandler {
 //      System.out.println("4. Processor");
 //      System.out.println("5. Price");
 
+        // TODO:  Once you change a setting, you get an error when you try to type the command which corresponds to the admin panel:
+
         switch (modifyCommand) {
             case 1 -> {
                 System.out.println();
@@ -23,7 +26,7 @@ public class ComputerHandler {
                 scanner.nextLine();
                 selectedComputer.name = scanner.nextLine();
                 utility.printSuccessfulCommand();
-                utility.printAdminOptions();
+                utility.printAdminComputerOptions();
             }
             case 2 -> {
                 System.out.println();
@@ -31,7 +34,7 @@ public class ComputerHandler {
                 scanner.nextLine();
                 selectedComputer.graphicCard = scanner.nextLine();
                 utility.printSuccessfulCommand();
-                utility.printAdminOptions();
+                utility.printAdminComputerOptions();
             }
             case 3 -> {
                 System.out.println();
@@ -39,7 +42,7 @@ public class ComputerHandler {
                 scanner.nextLine();
                 selectedComputer.ram = scanner.nextInt();
                 utility.printSuccessfulCommand();
-                utility.printAdminOptions();
+                utility.printAdminComputerOptions();
             }
             case 4 -> {
                 System.out.println();
@@ -47,7 +50,7 @@ public class ComputerHandler {
                 scanner.nextLine();
                 selectedComputer.processor = scanner.nextLine();
                 utility.printSuccessfulCommand();
-                utility.printAdminOptions();
+                utility.printAdminComputerOptions();
             }
             case 5 -> {
                 System.out.println();
@@ -55,13 +58,15 @@ public class ComputerHandler {
                 scanner.nextLine();
                 selectedComputer.price = scanner.nextInt();
                 utility.printSuccessfulCommand();
-                utility.printAdminOptions();
+                utility.printAdminComputerOptions();
             }
             default -> utility.invalidCommand();
         }
     }
 
     public void createComputer(Store store) {
+        String uniqueID = UUID.randomUUID().toString();
+
         System.out.print("Enter computer name: ");
         String name = scanner.nextLine();
 
@@ -79,11 +84,11 @@ public class ComputerHandler {
         int price = scanner.nextInt();
         scanner.nextLine();
 
-        Computer newComputer = new Computer(name, graphicCard, ram, processor, store.getComputers().size() + 1, price);
+        Computer newComputer = new Computer(uniqueID, name, graphicCard, ram, processor, store.getComputers().size() + 1);
         store.getComputers().add(newComputer);
 
         System.out.println("New computer created successfully!");
-        utility.printAdminOptions();
+        utility.printAdminComputerOptions();
     }
 
     public void deleteComputer(Store store) {
@@ -99,6 +104,6 @@ public class ComputerHandler {
         System.out.println();
         System.out.println("You have successfully deleted the computer!");
 
-        utility.printAdminOptions();
+        utility.printAdminComputerOptions();
     }
 }

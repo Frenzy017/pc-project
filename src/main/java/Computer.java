@@ -1,21 +1,42 @@
-import java.io.Serializable;
-
-public class Computer implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class Computer {
+    public String id;
     public String name;
     public String graphicCard;
-    public int ram;
     public String processor;
-    public long id;
+    public int ram;
     public int price;
 
-    public Computer(String name, String graphicCard, int ram, String processor, long id, int price) {
+    public Computer(String id, String name, String graphicCard, int ram, String processor,  int price) {
+        this.id = id;
         this.name = name;
         this.graphicCard = graphicCard;
         this.ram = ram;
         this.processor = processor;
-        this.id = id;
         this.price = price;
+    }
+
+    public String getId() {
+        return this.id;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public String getGraphicCard() {
+        return this.graphicCard;
+    }
+
+    public int getRam() {
+        return this.ram;
+    }
+
+    public String getProcessor() {
+        return this.processor;
+    }
+
+    public int getPrice() {
+        return this.price;
     }
 
     @Override
