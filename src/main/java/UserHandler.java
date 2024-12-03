@@ -1,20 +1,24 @@
+import java.util.Comparator;
+import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
 
 public class UserHandler {
-    private final UserService userService = new UserService();
-    private final Utility utility = new Utility();
-    private final Scanner scanner = new Scanner(System.in);
-    private Store store;
+    private final UserService userService;
+    private final Utility utility;
+    private final Scanner scanner;
+    private final Store store;
 
     public String currentUserID;
 
-    public UserHandler(Store store) {
+    public UserHandler(UserService userService, Utility utility, Scanner scanner, Store store) {
+        this.userService = userService;
+        this.utility = utility;
+        this.scanner = scanner;
         this.store = store;
-        this.store.setUserHandler(this);
     }
 
-    public void createUser() {
+    public void handleCreateUser() {
         String username = utility.setUsername();
         String password = utility.setPassword();
         String uniqueID = UUID.randomUUID().toString();
@@ -26,10 +30,9 @@ public class UserHandler {
         System.out.println();
         System.out.println("Account created successfully!");
         System.out.println();
-
     }
 
-    public void loginUser() {
+    public void handleLoginUser() {
         if (!userService.areUsersPresent()) {
             System.out.println("There are no current users registered, please register first");
             System.out.println();
@@ -64,13 +67,13 @@ public class UserHandler {
         }
     }
 
-    public void deleteUser() {
+    public void handleDeleteUser() {
         System.out.print("To delete a user, please type his / her name: ");
         String selectedUsername = scanner.nextLine();
 
         if (!userService.isUsernamePresent(selectedUsername)) {
             System.out.println("The username you entered does not exist. Please try again.");
-            deleteUser();
+            handleDeleteUser();
             return;
         }
 
@@ -85,18 +88,18 @@ public class UserHandler {
             System.out.println("You have successfully deleted the user: " + selectedUsername);
         } else {
             System.out.println("User not found. Please try again.");
-            deleteUser();
+            handleDeleteUser();
         }
         utility.printAdminStoreInterface();
     }
 
-    public void updatePassword() {
+    public void handleUpdatePassword() {
         System.out.print("To update someone's password, please type his / her name: ");
         String selectedUsername = scanner.nextLine();
 
         if (!userService.isUsernamePresent(selectedUsername)) {
             System.out.println("The username you entered does not exist. Please try again.");
-            updatePassword();
+            handleUpdatePassword();
         }
 
         System.out.println("You have selected the current account name: " + selectedUsername);
@@ -111,13 +114,13 @@ public class UserHandler {
         utility.printAdminStoreInterface();
     }
 
-    public void updateUsername() {
+    public void handleUpdateUsername() {
         System.out.print("To update someone's username, please type his / her name: ");
         String selectedUsername = scanner.nextLine();
 
         if (!userService.isUsernamePresent(selectedUsername)) {
             System.out.println("The username you entered does not exist. Please try again.");
-            updatePassword();
+            handleUpdatePassword();
         }
 
         System.out.println("You have selected the current account name: " + selectedUsername);
@@ -131,4 +134,53 @@ public class UserHandler {
         System.out.println("You have successfully updated the user's username!");
         utility.printAdminStoreInterface();
     }
+
+    public void handleViewAllUsers() {
+        List<User> users = userService.getAllUserProperties();
+
+        users.sort(Comparator.comparing((User user) -> !user.getRole().equals("admin")).thenComparing(User::getUsername));
+
+        System.out.println("Registered Users:");
+
+        for (User user : users) {
+            System.out.println("ID: " + user.getId() + ", Username: " + user.getUsername() + ", Password: " + user.getPassword() + ", Balance: " + user.getBalance() + ", Role: " + user.getRole());
+        }
+    }
+
+    public void handleViewAllUserOptions() {
+        System.out.print("Do you want to modify any user's data?  [Yes / No] ");
+        String command = scanner.nextLine();
+
+        if (command.equalsIgnoreCase("yes")) {
+            System.out.println();
+            System.out.println("Here are 4 methods you can choose from:");
+            System.out.println("Update user's username --> [username]");
+            System.out.println("Update user's password --> [password]");
+            System.out.println("Delete a user --> [delete]");
+            System.out.println("Abort action --> [back]");
+            System.out.println();
+            System.out.println("Please choose a method: ");
+
+            String chosenMethod = scanner.nextLine();
+
+            switch (chosenMethod) {
+                case "username" -> handleUpdateUsername();
+                case "password" -> handleUpdatePassword();
+                case "delete" -> handleDeleteUser();
+                case "back" -> utility.returnToAdminInterface();
+                default -> {
+                    System.out.println("No current method available, please try again!");
+                    scanner.nextLine();
+                    utility.printAdminComputerOptions();
+                }
+            }
+        } else if (command.equalsIgnoreCase("no")) {
+            utility.returnToAdminInterface();
+        }
+    }
+
+    public String getCurrentUserID() {
+        return currentUserID;
+    }
+
 }
