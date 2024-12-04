@@ -1,3 +1,5 @@
+package model;
+
 public class Computer {
     public String id;
     public String name;
@@ -6,12 +8,32 @@ public class Computer {
     public int ram;
     public int price;
 
-    public Computer(String id, String name, String graphicCard, int ram, String processor,  int price) {
+    public Computer(String id, String name, String graphicCard, int ram, String processor, int price) {
         this.id = id;
         this.name = name;
         this.graphicCard = graphicCard;
         this.ram = ram;
         this.processor = processor;
+        this.price = price;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setGraphicCard(String graphicCard) {
+        this.graphicCard = graphicCard;
+    }
+
+    public void setRam(int ram) {
+        this.ram = ram;
+    }
+
+    public void setProcessor(String processor) {
+        this.processor = processor;
+    }
+
+    public void setPrice(int price) {
         this.price = price;
     }
 
@@ -38,6 +60,7 @@ public class Computer {
     public int getPrice() {
         return this.price;
     }
+
 
     @Override
     public String toString() {
