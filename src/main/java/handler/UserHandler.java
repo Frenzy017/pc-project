@@ -1,21 +1,32 @@
-import java.util.Comparator;
-import java.util.List;
+package handler;
+
+import util.Utility;
 import java.util.Scanner;
 import java.util.UUID;
+import java.util.Comparator;
+import java.util.List;
+
+import mediator.IMediator;
+
+import model.User;
+
+import service.UserService;
 
 public class UserHandler {
-    private final UserService userService;
     private final Utility utility;
     private final Scanner scanner;
-    private final Store store;
+
+    private final UserService userService;
+
+    private final IMediator mediator;
 
     public String currentUserID;
 
-    public UserHandler(UserService userService, Utility utility, Scanner scanner, Store store) {
-        this.userService = userService;
-        this.utility = utility;
-        this.scanner = scanner;
-        this.store = store;
+    public UserHandler(IMediator mediator) {
+        this.mediator = mediator;
+        this.utility = mediator.getUtility();
+        this.scanner = mediator.getScanner();
+        this.userService = mediator.getUserService();
     }
 
     public void handleCreateUser() {
@@ -33,10 +44,13 @@ public class UserHandler {
     }
 
     public void handleLoginUser() {
+        System.out.println("Login has been initiated");
+        System.out.println();
+
         if (!userService.areUsersPresent()) {
             System.out.println("There are no current users registered, please register first");
             System.out.println();
-            store.start();
+            mediator.notify(this, "start");
             return;
         }
 
@@ -63,7 +77,8 @@ public class UserHandler {
             System.out.println();
             utility.invalidCommand();
             System.out.println();
-            store.start();
+
+            mediator.notify(this, "start");
         }
     }
 
