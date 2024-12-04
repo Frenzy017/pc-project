@@ -1,15 +1,16 @@
+package service;
+
+import connection.DatabaseConnectionManager;
+import model.User;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class UserService {
     private final DatabaseConnectionManager dbManager = new DatabaseConnectionManager();
-    Scanner scanner = new Scanner(System.in);
 
-    Utility utility = new Utility();
-
-    public void insertUser(User user) {
+    public void addUserToDatabase(User user) {
         String sql = "INSERT INTO users (id, username, password, balance, role) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection usersConnection = dbManager.getConnection("users");
@@ -27,7 +28,7 @@ public class UserService {
         }
     }
 
-    public void deleteUser(User user) {
+    public void removeUserFromDatabase(User user) {
         String sql = "DELETE FROM users WHERE id = ?";
 
         try (Connection usersConnection = dbManager.getConnection("users");
@@ -225,24 +226,4 @@ public class UserService {
         }
         return balance;
     }
-
-    public void depositMoney(String userId) {
-        int currentBalance = getBalanceById(userId);
-
-        System.out.println("Please enter any amount to deposit: ");
-        int amount = scanner.nextInt();
-
-        if (amount > 0) {
-            int newBalance = currentBalance + amount;
-            updateUserBalance(userId, newBalance);
-
-            System.out.println("You have successfully put: " + amount + " $ in your account!");
-            utility.printCartInterface();
-        } else {
-            System.out.println("Please enter a positive amount!");
-            depositMoney(userId);
-        }
-    }
-
-
 }
