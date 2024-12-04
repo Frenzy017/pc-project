@@ -1,12 +1,9 @@
+package util;
+
 import java.util.Scanner;
 
 public class Utility {
     static Scanner scanner = new Scanner(System.in);
-
-    public void printSuccessfulCommand() {
-        System.out.println();
-        System.out.println("Success!");
-    }
 
     public void invalidCommand() {
         System.out.println("Invalid command, please try again! ");
@@ -68,7 +65,7 @@ public class Utility {
         System.out.println("╔════════════════════════════════════════╗");
         System.out.println("║        Admin PC Store Interface        ║");
         System.out.println("╠════════════════════════════════════════╣");
-        System.out.println("║ Available items --> [show]             ║");
+        System.out.println("║ Available computers --> [show]         ║");
         System.out.println("║ Cart --> [cart]                        ║");
         System.out.println("║ View all users --> [view]              ║");
         System.out.println("║ Logout --> [logout]                    ║");
@@ -87,6 +84,7 @@ public class Utility {
         System.out.println("║ Create a new computer object --> [new] ║");
         System.out.println("║ Modify computer object --> [modify]    ║");
         System.out.println("║ Delete computer object --> [delete]    ║");
+        System.out.println("║ Available computers --> [show]         ║");
         System.out.println("║ Return to main menu --> [back]         ║");
         System.out.println("╚════════════════════════════════════════╝");
         System.out.println();
@@ -104,6 +102,27 @@ public class Utility {
         System.out.println("5. Price");
 
         System.out.print("Please enter the number which corresponds with the value you want to modify: ");
+    }
+
+    public void returnToAdminInterface() {
+        System.out.println();
+        System.out.print("Press Enter to return to the main interface...");
+        scanner.nextLine();
+        printAdminStoreInterface();
+    }
+
+    public void returnToAdminComputerOptions() {
+        System.out.println();
+        System.out.print("Press Enter to return to the main interface...");
+        scanner.nextLine();
+        printAdminComputerOptions();
+    }
+
+    public void returnToInterface() {
+        System.out.println();
+        System.out.print("Press Enter to return to the main interface...");
+        scanner.nextLine();
+        printStoreInterface();
     }
 
     public String setUsername() {
