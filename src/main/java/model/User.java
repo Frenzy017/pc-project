@@ -1,4 +1,4 @@
-import java.util.Scanner;
+package model;
 
 public class User {
     private String id;
@@ -7,7 +7,6 @@ public class User {
     private String role;
     private int balance;
 
-    private UserService userService = new UserService();
 
     public User(String id, String username, String password, int balance, String role) {
         this.id = id;
