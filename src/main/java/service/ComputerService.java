@@ -94,25 +94,4 @@ public class ComputerService {
         }
         return computers;
     }
-
-
-//    public void updateComputer(Computer computer) {
-//        String sql = "UPDATE computers SET name = ?, graphicCard = ?, ram = ?, processor = ?, price = ? WHERE id = ?";
-//
-//        try (Connection conn = dbManager.getConnection();
-//             PreparedStatement ps = conn.prepareStatement(sql)) {
-//
-//            ps.setString(1, computer.getName());
-//            ps.setString(2, computer.getGraphicCard());
-//            ps.setInt(3, computer.getRam());
-//            ps.setString(4, computer.getProcessor());
-//            ps.setInt(5, computer.getPrice());
-//            ps.setLong(6, computer.getId());
-//
-//            ps.executeUpdate();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
 }

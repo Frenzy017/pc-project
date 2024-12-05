@@ -61,7 +61,6 @@ public class Computer {
         return this.price;
     }
 
-
     @Override
     public String toString() {
         return name + ", with the Specifications: " + graphicCard + ", " + ram + "GB RAM, " + processor + ", Price: " + price + "$";
