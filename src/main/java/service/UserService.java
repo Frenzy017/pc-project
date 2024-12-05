@@ -23,6 +23,13 @@ public class UserService {
             ps.setString(5, user.getRole());
 
             ps.executeUpdate();
+
+            System.out.println();
+            System.out.println("Account created successfully!");
+            System.out.println();
+
+        } catch (SQLIntegrityConstraintViolationException e) {
+            System.out.println("Error: The username '" + user.getUsername() + "' is already taken. Please choose a different username.");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -42,13 +49,50 @@ public class UserService {
         }
     }
 
-    public void updateUserBalance(String userId, int newBalance) {
-        String sql = "UPDATE users SET balance = ? WHERE id = ?";
+    public int getBalanceById(String userId) {
+        String sql = "SELECT balance FROM users WHERE id = ?";
+        int balance = 0;
 
         try (Connection conn = dbManager.getConnection("users");
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setInt(1, newBalance);
+            ps.setString(1, userId);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                balance = rs.getInt("balance");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return balance;
+    }
+
+    public void updateUserBalance(String userId, int amountToDeposit) {
+        String sql = "UPDATE users SET balance = ? WHERE id = ?";
+        int updatedBalance = getBalanceById(userId) + amountToDeposit;
+
+        try (Connection conn = dbManager.getConnection("users");
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, updatedBalance);
+            ps.setString(2, userId);
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateUserBalanceDeduct(String userId, int amountToDeduct) {
+        String sql = "UPDATE users SET balance = ? WHERE id = ?";
+        int updatedBalance = getBalanceById(userId) - amountToDeduct;
+
+        try (Connection conn = dbManager.getConnection("users");
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, updatedBalance);
             ps.setString(2, userId);
             ps.executeUpdate();
 
@@ -108,6 +152,7 @@ public class UserService {
 
     public boolean isUsernamePresent(String username) {
         String sql = "SELECT COUNT(*) FROM users WHERE username = ?";
+
         try (Connection conn = dbManager.getConnection("users");
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, username);
@@ -123,6 +168,7 @@ public class UserService {
 
     public boolean validateUserCredentials(String usernameToLogin, String passwordToLogin) {
         String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+
         boolean validLogin = false;
 
         try (Connection conn = dbManager.getConnection("users");
@@ -207,23 +253,5 @@ public class UserService {
         return role;
     }
 
-    public int getBalanceById(String userId) {
-        String sql = "SELECT balance FROM users WHERE id = ?";
-        int balance = 0;
 
-        try (Connection conn = dbManager.getConnection("users");
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setString(1, userId);
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                balance = rs.getInt("balance");
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return balance;
-    }
 }
