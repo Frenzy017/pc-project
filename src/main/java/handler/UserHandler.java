@@ -38,9 +38,7 @@ public class UserHandler {
 
         userService.addUserToDatabase(newUser);
 
-        System.out.println();
-        System.out.println("Account created successfully!");
-        System.out.println();
+        mediator.notify(this, "start");
     }
 
     public void handleLoginUser() {
@@ -174,7 +172,7 @@ public class UserHandler {
             System.out.println("Delete a user --> [delete]");
             System.out.println("Abort action --> [back]");
             System.out.println();
-            System.out.println("Please choose a method: ");
+            System.out.print("Please choose a method: ");
 
             String chosenMethod = scanner.nextLine();
 
