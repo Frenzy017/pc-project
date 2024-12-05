@@ -2,6 +2,8 @@ package store;
 
 import java.io.*;
 import java.util.*;
+
+import handler.CartHandler;
 import util.Utility;
 
 import handler.ComputerHandler;
@@ -20,6 +22,7 @@ public class Store {
 
     private final UserHandler userHandler;
     private final ComputerHandler computerHandler;
+    private final CartHandler cartHandler;
 
     private final ComputerService computerService;
     private final UserService userService;
@@ -27,6 +30,7 @@ public class Store {
     private final ArrayList<Computer> computers;
 
     private final IMediator mediator;
+
     private final Map<String, Runnable> commandMap = new HashMap<>();
 
     private boolean isLogout;
@@ -38,6 +42,7 @@ public class Store {
         this.scanner = mediator.getScanner();
         this.userHandler = mediator.getUserHandler();
         this.computerHandler = mediator.getComputerHandler();
+        this.cartHandler = mediator.getCartHandler();
         this.computerService = mediator.getComputerService();
         this.userService = mediator.getUserService();
 
@@ -87,6 +92,7 @@ public class Store {
     public void handleComputerSelectionAsUser() {
         computerHandler.handleComputerPrint();
         computerHandler.handleComputerSelection();
+        cartHandler.handleAddCartItem();
     }
 
     public void handleComputerSelectionAsAdmin() {
@@ -98,10 +104,8 @@ public class Store {
         String role = userService.getUserRoleById(userHandler.currentUserID);
 
         if (role.equals("admin")) {
-            utility.invalidCommand();
             utility.printAdminStoreInterface();
         } else {
-            utility.invalidCommand();
             utility.printStoreInterface();
         }
     }
@@ -133,7 +137,7 @@ public class Store {
     public void initializeComputerTable() {
         if (!isComputerTableInitialized) {
             computerService.addComputersToDatabase(computers);
-            isComputerTableInitialized = true;
+            isComputerTableInitialized = false;
             saveConfig();
         }
     }
