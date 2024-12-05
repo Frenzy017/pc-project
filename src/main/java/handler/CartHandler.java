@@ -25,6 +25,9 @@ public class CartHandler {
 
     private final IMediator mediator;
 
+    int balance = 0;
+    int totalPrice = 0;
+
     public CartHandler(IMediator mediator) {
         this.mediator = mediator;
         this.utility = mediator.getUtility();
@@ -35,27 +38,57 @@ public class CartHandler {
         this.cartService = mediator.getCartService();
     }
 
-    public void handleCreateCart() {
-        String userId = userHandler.currentUserID;
+    private String getUserId() {
+        return userHandler.currentUserID;
+    }
+
+    private int getCartIdForCurrentUser() {
+        String userId = getUserId();
+        return cartService.getCartIdByUserId(userId);
+    }
+
+
+    public void handleCart() {
+        utility.printCartInterface();
+
+        handleCreateCart();
+
+        while (true) {
+            String cartCommand = scanner.nextLine();
+
+            switch (cartCommand.toLowerCase()) {
+                case "back" -> {
+                    utility.returnToInterface();
+                    return;
+                }
+                case "cart" -> {
+                    handlePrintCart();
+                    handlePurchaseIfNotEmpty();
+                }
+                case "clear" -> handleClearCart();
+                case "deposit" -> handleDepositMoney();
+                default -> utility.printCartInterface();
+            }
+        }
+    }
+
+    private void handleCreateCart() {
+        String userId = getUserId();
 
         if (!cartService.userHasCart(userId)) {
             cartService.createCartForUser(userId);
-            System.out.println("A new cart has been created for the user.");
         }
     }
 
     public void handleAddCartItem() {
-        computerHandler.handleComputerPrint();
+        Computer selectedComputer = computerHandler.getSelectedComputer();
 
-        Computer selectedComputer = mediator.getComputerHandler().handleComputerSelection();
-
-        System.out.println("Do you want to add this computer to your cart? [Yes / No]");
+        System.out.print("Do you want to add this computer to your cart? [Yes / No] ");
 
         String command = scanner.nextLine();
 
         if (command.equalsIgnoreCase("Yes")) {
-            String userId = mediator.getUserHandler().currentUserID;
-            int cartId = cartService.getCartIdByUserId(userId);
+            int cartId = getCartIdForCurrentUser();
 
             String computerId = selectedComputer.getId();
             String computerName = selectedComputer.getName();
@@ -63,44 +96,102 @@ public class CartHandler {
 
             cartService.addToCart(new CartItem(cartId, computerId, computerName, computerPrice));
 
+            System.out.println();
             System.out.println("You have successfully added the selected computer to your cart!");
+
+            utility.returnToInterface();
 
         } else if (command.equalsIgnoreCase("No")) {
             utility.returnToInterface();
         }
     }
 
-    public void handlePrintCart() {
-        String userId = userHandler.currentUserID;
-        int cartId = cartService.getCartIdByUserId(userId);
+    private void handleClearCart() {
+        int cartId = getCartIdForCurrentUser();
+        cartService.deleteComputersByCartId(cartId);
+        System.out.println("Cart has been cleared.");
+        utility.returnToCartInterface();
+    }
 
-        int balance = userService.getBalanceById(userId);
-        int totalPrice = 0;
+    private void handleDepositMoney() {
+        System.out.print("Enter the amount you want to deposit: ");
+        int depositAmount = scanner.nextInt();
+
+        if (depositAmount > 0) {
+            String userId = getUserId();
+            userService.updateUserBalance(userId, depositAmount);
+            System.out.println("Successfully deposited " + depositAmount + "$ to your account.");
+        } else {
+            System.out.println("Invalid deposit amount. Please enter a positive number.");
+        }
+    }
+
+    private void handlePrintCart() {
+        String userId = getUserId();
+        int cartId = getCartIdForCurrentUser();
+
+        balance = userService.getBalanceById(userId);
 
         List<Computer> computers = cartService.getComputersByCartId(cartId);
 
-        for (Computer computer : computers) {
-            totalPrice += computer.getPrice();
-        }
+        totalPrice = computers.stream().mapToInt(Computer::getPrice).sum();
 
         System.out.println("Currently you have " + computers.size() + " computers in your cart.");
         System.out.println("Your current balance is: " + balance + "$.");
         System.out.println("Total price of your cart is: " + totalPrice + "$.");
         System.out.println();
-        System.out.println("Here are the computers in your cart: ");
-        System.out.println();
 
-        for (Computer computer : computers) {
-            String borderTop = "╭──────────────────────────────────────────────────────────────────────────────────╮";
-            String borderBottom = "╰──────────────────────────────────────────────────────────────────────────────────╯";
+        if (computers.isEmpty()) {
+            System.out.println("There are no computers in your cart, please select one first.");
+            utility.returnToCartInterface();
+        } else {
+            System.out.println("Here are the computers in your cart: ");
+            System.out.println();
 
-            System.out.println(borderTop);
-            System.out.println("  Computer name: " + computer.getName() + ", " +
-                    "RAM: " + computer.getRam() + "GB" + ", " +
-                    "Processor: " + computer.getProcessor() + ", " +
-                    "Price: " + computer.getPrice() + "$");
-            System.out.println(borderBottom);
+            for (Computer computer : computers) {
+                System.out.println(String.format(
+                        "Computer name: %s, RAM: %dGB, Processor: %s, Price: %d$",
+                        computer.getName(), computer.getRam(), computer.getProcessor(), computer.getPrice()));
+            }
         }
     }
 
+    private void handlePurchaseCart() {
+        String userId = getUserId();
+        int cartId = getCartIdForCurrentUser();
+
+        List<Computer> computers = cartService.getComputersByCartId(cartId);
+
+        System.out.println();
+
+        System.out.print("Do you want to purchase the computers you have selected in your cart?  [Yes / No] ");
+        String command = scanner.nextLine();
+
+        if (command.equalsIgnoreCase("Yes")) {
+
+            int deficit = totalPrice - balance;
+
+            if (balance < totalPrice) {
+                System.out.println("Insufficient balance. You're missing: " + deficit + "$" + " to purchase your products.");
+                System.out.println("Please deposit more money to proceed.");
+                utility.returnToCartInterface();
+            } else {
+                userService.updateUserBalanceDeduct(userId, totalPrice);
+                cartService.deleteComputersByCartId(cartId);
+
+                System.out.println("Purchase successful! You have bought " + computers.size() + " computers.");
+
+                utility.returnToCartInterface();
+            }
+
+        } else if (command.equalsIgnoreCase("No")) {
+            utility.returnToCartInterface();
+        }
+    }
+
+    private void handlePurchaseIfNotEmpty() {
+        if (!cartService.getComputersByCartId(getCartIdForCurrentUser()).isEmpty()) {
+            handlePurchaseCart();
+        }
+    }
 }

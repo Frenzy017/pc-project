@@ -79,42 +79,6 @@ public class CartService {
         }
     }
 
-    public int getCartItemCountByUserId(String userId) {
-        int itemCount = 0;
-        String sql = "SELECT COUNT(*) AS itemCount FROM CartItem WHERE cartId = (SELECT cartId FROM Cart WHERE userId = ?)";
-
-        try (Connection conn = dbManager.getConnection("users");
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, userId);
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                itemCount = rs.getInt("itemCount");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return itemCount;
-    }
-
-    public double getCartItemTotalPriceByUserId(String userId) {
-        double totalPrice = 0;
-        String sql = "SELECT computerPrice FROM CartItem WHERE cartId = (SELECT cartId FROM Cart WHERE userId = ?)";
-
-        try (Connection conn = dbManager.getConnection("users");
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, userId);
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                totalPrice += rs.getDouble("computerPrice");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return totalPrice;
-    }
-
     public List<Computer> getComputersByCartId(int cartId) {
         List<Computer> computers = new ArrayList<>();
         List<String> computerIds = new ArrayList<>();
@@ -158,9 +122,39 @@ public class CartService {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return computers;
     }
 
+    public void deleteComputersByCartId(int cartId) {
+        List<String> computerIds = new ArrayList<>();
 
+        String sqlCartItems = "SELECT computerId FROM cartItem WHERE cartId = ?";
+
+        try (Connection conn = dbManager.getConnection("users");
+             PreparedStatement ps = conn.prepareStatement(sqlCartItems)) {
+            ps.setInt(1, cartId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                computerIds.add(rs.getString("computerId"));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        String sqlDeleteCartItem = "DELETE FROM cartItem WHERE cartId = ? AND computerId = ?";
+
+        try (Connection conn = dbManager.getConnection("users")) {
+            for (String computerId : computerIds) {
+                try (PreparedStatement ps = conn.prepareStatement(sqlDeleteCartItem)) {
+                    ps.setInt(1, cartId);
+                    ps.setString(2, computerId);
+                    ps.executeUpdate();
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

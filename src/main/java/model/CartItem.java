@@ -29,15 +29,4 @@ public class CartItem {
         return computerPrice;
     }
 
-    public void setComputerId(String computerId) {
-        this.computerId = computerId;
-    }
-
-    public void setComputerName(String computerName) {
-        this.computerName = computerName;
-    }
-
-    public void setComputerPrice(double computerPrice) {
-        this.computerPrice = computerPrice;
-    }
 }
