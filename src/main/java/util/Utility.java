@@ -1,8 +1,18 @@
 package util;
 
+import mediator.IMediator;
+
 import java.util.Scanner;
 
+
 public class Utility {
+
+    private final IMediator mediator;
+
+    public Utility(IMediator mediator) {
+        this.mediator = mediator;
+    }
+
     static Scanner scanner = new Scanner(System.in);
 
     public void invalidCommand() {
@@ -51,8 +61,6 @@ public class Utility {
         System.out.println("║ Items in cart --> [cart]               ║");
         System.out.println("║ Clear cart --> [clear]                 ║");
         System.out.println("║ Deposit money --> [deposit]            ║");
-        System.out.println("║ Purchase products --> [purchase]       ║");
-        System.out.println("║ Log out --> [logout]                   ║");
         System.out.println("╚════════════════════════════════════════╝");
         System.out.println();
 
@@ -84,7 +92,6 @@ public class Utility {
         System.out.println("║ Create a new computer object --> [new] ║");
         System.out.println("║ Modify computer object --> [modify]    ║");
         System.out.println("║ Delete computer object --> [delete]    ║");
-        System.out.println("║ Available computers --> [show]         ║");
         System.out.println("║ Return to main menu --> [back]         ║");
         System.out.println("╚════════════════════════════════════════╝");
         System.out.println();
@@ -104,6 +111,7 @@ public class Utility {
         System.out.print("Please enter the number which corresponds with the value you want to modify: ");
     }
 
+
     public void returnToAdminInterface() {
         System.out.println();
         System.out.print("Press Enter to return to the main interface...");
@@ -119,11 +127,24 @@ public class Utility {
     }
 
     public void returnToInterface() {
+        String currentUserID = mediator.getUserHandler().getCurrentUserID();
         System.out.println();
         System.out.print("Press Enter to return to the main interface...");
         scanner.nextLine();
-        printStoreInterface();
+        if (mediator.getUserService().getUserRoleById(currentUserID).equals("admin")) {
+            printAdminStoreInterface();
+        } else {
+            printStoreInterface();
+        }
     }
+
+    public void returnToCartInterface() {
+        System.out.println();
+        System.out.print("Press Enter to return to the main interface...");
+        scanner.nextLine();
+        printCartInterface();
+    }
+
 
     public String setUsername() {
         System.out.print("Please enter an username: ");
