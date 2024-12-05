@@ -61,7 +61,7 @@ public class CartHandler {
                     utility.returnToInterface();
                     return;
                 }
-                case "cart" -> {
+                case "show" -> {
                     handlePrintCart();
                     handlePurchaseIfNotEmpty();
                 }

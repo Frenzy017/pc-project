@@ -58,7 +58,7 @@ public class Utility {
         System.out.println("║            Cart Interface              ║");
         System.out.println("╠════════════════════════════════════════╣");
         System.out.println("║ Return to main menu --> [back]         ║");
-        System.out.println("║ Items in cart --> [cart]               ║");
+        System.out.println("║ Items in cart --> [show]               ║");
         System.out.println("║ Clear cart --> [clear]                 ║");
         System.out.println("║ Deposit money --> [deposit]            ║");
         System.out.println("╚════════════════════════════════════════╝");
