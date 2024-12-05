@@ -20,6 +20,7 @@ public interface IMediator {
 
     UserHandler getUserHandler();
     ComputerHandler getComputerHandler();
+    CartHandler getCartHandler();
 
     CartService getCartService();
     UserService getUserService();

@@ -12,7 +12,7 @@ import util.Utility;
 import java.util.Scanner;
 
 public class Mediator implements IMediator {
-    private final Utility utility = new Utility();
+    private final Utility utility = new Utility(this);
     private final Scanner scanner = new Scanner(System.in);
 
     private Store store;
@@ -27,8 +27,8 @@ public class Mediator implements IMediator {
 
     @Override
     public void notify(Object sender, String event) {
-       cartHandler = getCartHandler();
-       userHandler = getUserHandler();
+        cartHandler = getCartHandler();
+        userHandler = getUserHandler();
         switch (event) {
             case "start" -> store.start();
             case "createUser" -> userHandler.handleCreateUser();
@@ -39,11 +39,7 @@ public class Mediator implements IMediator {
                 userHandler.handleViewAllUserOptions();
             }
             case "logout" -> store.logout();
-            case "cart" -> {
-                cartHandler.handlePrintCart();
-//                cartHandler.handleCreateCart();
-//                cartHandler.handleAddCartItem();
-            }
+            case "cart" -> cartHandler.handleCart();
             default -> throw new IllegalArgumentException("Unknown event: " + event);
         }
     }
