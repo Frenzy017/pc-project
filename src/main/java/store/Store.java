@@ -35,6 +35,7 @@ public class Store {
 
     private boolean isLogout;
     private boolean isComputerTableInitialized;
+    private Properties config;
 
     public Store(IMediator mediator) {
         this.mediator = mediator;
@@ -110,43 +111,50 @@ public class Store {
         }
     }
 
+    public void logout() {
+        System.out.println("You have successfully logged out!");
+        System.out.println();
+        isLogout = true;
+    }
+
     private void loadConfig() {
-        Properties properties = new Properties();
-        try (InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties")) {
-            if (input == null) {
-                System.out.println("Sorry, unable to find config.properties");
-                return;
+        config = new Properties();
+        File configFile = new File("src/main/resources/config.properties");
+
+        if (!configFile.exists()) {
+            try (OutputStream output = new FileOutputStream(configFile)) {
+                config.setProperty("isComputerTableInitialized", "false");
+                config.store(output, null);
+            } catch (IOException io) {
+                io.printStackTrace();
             }
-            properties.load(input);
-            isComputerTableInitialized = Boolean.parseBoolean(properties.getProperty("isComputerTableInitialized"));
+        }
+
+        try (InputStream input = new FileInputStream(configFile)) {
+            config.load(input);
+            isComputerTableInitialized = Boolean.parseBoolean(config.getProperty("isComputerTableInitialized", "false"));
         } catch (IOException ex) {
             ex.printStackTrace();
         }
     }
 
     private void saveConfig() {
-        Properties properties = new Properties();
-        properties.setProperty("isComputerTableInitialized", Boolean.toString(isComputerTableInitialized));
-        try (OutputStream output = new FileOutputStream("config.properties")) {
-            properties.store(output, null);
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        try (OutputStream output = new FileOutputStream("src/main/resources/config.properties")) {
+            config.setProperty("isComputerTableInitialized", String.valueOf(isComputerTableInitialized));
+            config.store(output, null);
+        } catch (IOException io) {
+            io.printStackTrace();
         }
     }
 
-    public void initializeComputerTable() {
+    private void initializeComputerTable() {
         if (!isComputerTableInitialized) {
             computerService.addComputersToDatabase(computers);
-            isComputerTableInitialized = false;
+            isComputerTableInitialized = true;
             saveConfig();
         }
     }
 
-    public void logout() {
-        System.out.println("You have successfully logged out!");
-        System.out.println();
-        isLogout = true;
-    }
 }
 
 
