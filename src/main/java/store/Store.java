@@ -17,6 +17,8 @@ import service.UserService;
 import mediator.IMediator;
 
 public class Store {
+    private Properties config;
+
     private final Utility utility;
     private final Scanner scanner;
 
@@ -35,7 +37,6 @@ public class Store {
 
     private boolean isLogout;
     private boolean isComputerTableInitialized;
-    private Properties config;
 
     public Store(IMediator mediator) {
         this.mediator = mediator;
