@@ -159,8 +159,6 @@ public class ComputerHandler {
     public void handleComputerCreation() {
         List<Computer> computers = computerService.getAllComputerProperties();
 
-        String uniqueID = UUID.randomUUID().toString();
-
         System.out.print("Enter computer name: ");
         String name = scanner.nextLine();
 
@@ -183,7 +181,7 @@ public class ComputerHandler {
         System.out.print("Enter price: ");
         int price = scanner.nextInt();
 
-        Computer newComputer = new Computer(uniqueID, name, graphicCard, ram, processor, price);
+        Computer newComputer = new Computer(0, name, graphicCard, ram, processor, price);
 
         computerService.insertComputerIntoDatabase(newComputer);
 

@@ -13,17 +13,16 @@ public class ComputerService {
     private final DatabaseConnectionManager dbManager = new DatabaseConnectionManager();
 
     public void insertComputerIntoDatabase(Computer computer) {
-        String sql = "INSERT INTO computers (id, name, graphicCard, ram, processor, price) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO computers (name, graphicCard, ram, processor, price) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection computersConnection = dbManager.getConnection("computers");
              PreparedStatement ps = computersConnection.prepareStatement(sql)) {
 
-            ps.setString(1, computer.getId());
-            ps.setString(2, computer.getName());
-            ps.setString(3, computer.getGraphicCard());
-            ps.setInt(4, computer.getRam());
-            ps.setString(5, computer.getProcessor());
-            ps.setInt(6, computer.getPrice());
+            ps.setString(1, computer.getName());
+            ps.setString(2, computer.getGraphicCard());
+            ps.setInt(3, computer.getRam());
+            ps.setString(4, computer.getProcessor());
+            ps.setInt(5, computer.getPrice());
 
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -42,7 +41,7 @@ public class ComputerService {
             ps.setInt(3, computer.getRam());
             ps.setString(4, computer.getProcessor());
             ps.setInt(5, computer.getPrice());
-            ps.setString(6, computer.getId());
+            ps.setInt(6, computer.getId());
 
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -63,12 +62,6 @@ public class ComputerService {
         }
     }
 
-    public void addComputersToDatabase(List<Computer> computers) {
-        for (Computer computer : computers) {
-            computer.id = UUID.randomUUID().toString();
-            insertComputerIntoDatabase(computer);
-        }
-    }
 
     public List<Computer> getAllComputerProperties() {
         List<Computer> computers = new ArrayList<>();
@@ -80,7 +73,7 @@ public class ComputerService {
 
             while (rs.next()) {
                 Computer computer = new Computer(
-                        rs.getString("id"),
+                        rs.getInt("id"),
                         rs.getString("name"),
                         rs.getString("graphicCard"),
                         rs.getInt("ram"),

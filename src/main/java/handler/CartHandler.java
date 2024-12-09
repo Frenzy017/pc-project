@@ -90,10 +90,10 @@ public class CartHandler {
         if (command.equalsIgnoreCase("Yes")) {
             int cartId = getCartIdForCurrentUser();
 
-            String computerId = selectedComputer.getId();
+            int computerId = selectedComputer.getId();
             double computerPrice = selectedComputer.getPrice();
 
-            cartService.addToCart(new CartItem(cartId, computerId,  computerPrice));
+            cartService.addToCart(new CartItem(cartId, computerId, computerPrice));
 
             System.out.println();
             System.out.println("You have successfully added the selected computer to your cart!");

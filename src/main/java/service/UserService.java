@@ -12,18 +12,23 @@ public class UserService {
     private final DatabaseConnectionManager dbManager = new DatabaseConnectionManager();
 
     public void addUserToDatabase(User user) {
-        String sql = "INSERT INTO users (id, username, password, balance, role) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO users (username, password, balance, role) VALUES (?, ?, ?, ?)";
 
         try (Connection usersConnection = dbManager.getConnection("users");
-             PreparedStatement ps = usersConnection.prepareStatement(sql)) {
+             PreparedStatement ps = usersConnection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            ps.setString(1, user.getId());
-            ps.setString(2, user.getUsername());
-            ps.setString(3, user.getPassword());
-            ps.setInt(4, user.getBalance());
-            ps.setString(5, user.getRole());
+            ps.setString(1, user.getUsername());
+            ps.setString(2, user.getPassword());
+            ps.setInt(3, user.getBalance());
+            ps.setString(4, user.getRole());
 
             ps.executeUpdate();
+
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    user.setId(generatedKeys.getInt(1));
+                }
+            }
 
             System.out.println();
             System.out.println("Account created successfully!");
@@ -42,7 +47,7 @@ public class UserService {
         try (Connection usersConnection = dbManager.getConnection("users");
              PreparedStatement ps = usersConnection.prepareStatement(sql)) {
 
-            ps.setString(1, user.getId());
+            ps.setInt(1, user.getId());
             ps.executeUpdate();
 
         } catch (SQLException e) {
@@ -199,7 +204,7 @@ public class UserService {
 
             while (rs.next()) {
                 User user = new User(
-                        rs.getString("id"),
+                        rs.getInt("id"),
                         rs.getString("username"),
                         rs.getString("password"),
                         rs.getInt("balance"),

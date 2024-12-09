@@ -2,10 +2,10 @@ package model;
 
 public class CartItem {
     private int cartId;
-    private String computerId;
+    private int computerId;
     private double computerPrice;
 
-    public CartItem(int cartId, String computerId, double computerPrice) {
+    public CartItem(int cartId, int computerId, double computerPrice) {
         this.cartId = cartId;
         this.computerId = computerId;
         this.computerPrice = computerPrice;
@@ -15,7 +15,7 @@ public class CartItem {
         return cartId;
     }
 
-    public String getComputerId() {
+    public int getComputerId() {
         return computerId;
     }
 

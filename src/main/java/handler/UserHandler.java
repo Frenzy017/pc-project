@@ -1,6 +1,7 @@
 package handler;
 
 import util.Utility;
+
 import java.util.Scanner;
 import java.util.UUID;
 import java.util.Comparator;
@@ -32,9 +33,8 @@ public class UserHandler {
     public void handleCreateUser() {
         String username = utility.setUsername();
         String password = utility.setPassword();
-        String uniqueID = UUID.randomUUID().toString();
 
-        User newUser = new User(uniqueID, username, password, 0, "user");
+        User newUser = new User(0, username, password, 0, "user");
 
         userService.addUserToDatabase(newUser);
 

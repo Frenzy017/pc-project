@@ -39,7 +39,7 @@ public class CartService {
             String sql = "INSERT INTO CartItem (cartId, computerId,  computerPrice) VALUES (?, ?,  ?)";
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
                 ps.setInt(1, cartItem.getCartId());
-                ps.setString(2, cartItem.getComputerId());
+                ps.setInt(2, cartItem.getComputerId());
                 ps.setDouble(3, cartItem.getComputerPrice());
                 ps.executeUpdate();
             }
@@ -108,7 +108,7 @@ public class CartService {
 
                     if (rs.next()) {
                         Computer computer = new Computer(
-                                rs.getString("id"),
+                                rs.getInt("id"),
                                 rs.getString("name"),
                                 rs.getString("graphicCard"),
                                 rs.getInt("ram"),

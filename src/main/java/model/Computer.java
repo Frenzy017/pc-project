@@ -1,14 +1,14 @@
 package model;
 
 public class Computer {
-    public String id;
+    public int id;
     public String name;
     public String graphicCard;
     public String processor;
     public int ram;
     public int price;
 
-    public Computer(String id, String name, String graphicCard, int ram, String processor, int price) {
+    public Computer(int id, String name, String graphicCard, int ram, String processor, int price) {
         this.id = id;
         this.name = name;
         this.graphicCard = graphicCard;
@@ -37,7 +37,7 @@ public class Computer {
         this.price = price;
     }
 
-    public String getId() {
+    public int getId() {
         return this.id;
     }
 
