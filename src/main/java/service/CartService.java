@@ -36,12 +36,11 @@ public class CartService {
 
     public void addToCart(CartItem cartItem) {
         try (Connection conn = dbManager.getConnection("users")) {
-            String sql = "INSERT INTO CartItem (cartId, computerId, computerName, computerPrice) VALUES (?, ?, ?, ?)";
+            String sql = "INSERT INTO CartItem (cartId, computerId,  computerPrice) VALUES (?, ?,  ?)";
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
                 ps.setInt(1, cartItem.getCartId());
                 ps.setString(2, cartItem.getComputerId());
-                ps.setString(3, cartItem.getComputerName());
-                ps.setDouble(4, cartItem.getComputerPrice());
+                ps.setDouble(3, cartItem.getComputerPrice());
                 ps.executeUpdate();
             }
         } catch (SQLException e) {

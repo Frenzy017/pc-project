@@ -91,10 +91,9 @@ public class CartHandler {
             int cartId = getCartIdForCurrentUser();
 
             String computerId = selectedComputer.getId();
-            String computerName = selectedComputer.getName();
             double computerPrice = selectedComputer.getPrice();
 
-            cartService.addToCart(new CartItem(cartId, computerId, computerName, computerPrice));
+            cartService.addToCart(new CartItem(cartId, computerId,  computerPrice));
 
             System.out.println();
             System.out.println("You have successfully added the selected computer to your cart!");
