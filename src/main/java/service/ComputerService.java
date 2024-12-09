@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 import connection.DatabaseConnectionManager;
+import exception.DatabaseException;
 import model.Computer;
 
 public class ComputerService {
@@ -26,7 +27,7 @@ public class ComputerService {
 
             ps.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Error inserting computer in database: " + computer, e);
         }
     }
 
@@ -45,7 +46,7 @@ public class ComputerService {
 
             ps.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Error updating computer in database: " + computer, e);
         }
     }
 
@@ -58,7 +59,7 @@ public class ComputerService {
             ps.setString(1, name);
             ps.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Error deleting computer from database: " + name, e);
         }
     }
 
@@ -90,7 +91,7 @@ public class ComputerService {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Error getting all computer properties", e);
         }
         return computers;
     }

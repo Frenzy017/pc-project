@@ -1,6 +1,7 @@
 package service;
 
 import connection.DatabaseConnectionManager;
+import exception.DatabaseException;
 import model.CartItem;
 import model.Computer;
 
@@ -10,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class CartService {
     private final DatabaseConnectionManager dbManager = new DatabaseConnectionManager();
@@ -28,7 +30,7 @@ public class CartService {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Error creating a cart for the user" + userId, e);
         }
     }
 
@@ -43,7 +45,7 @@ public class CartService {
                 ps.executeUpdate();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Error adding item to cart: " + cartItem, e);
         }
     }
 
@@ -57,7 +59,7 @@ public class CartService {
                 return resultSet.getInt(1) > 0;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Error checking if user has cart: " + userId, e);
         }
         return false;
     }
@@ -74,8 +76,7 @@ public class CartService {
                 throw new IllegalArgumentException("Cart not found for userId: " + userId);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Database error occurred");
+            throw new DatabaseException("Error getting cart's id by user id: " + userId, e);
         }
     }
 
@@ -95,7 +96,7 @@ public class CartService {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Error getting computers ids: " + cartId, e);
         }
 
         String sqlComputers = "SELECT id, name, graphicCard, ram, processor, price FROM computers WHERE id = ?";
@@ -117,10 +118,12 @@ public class CartService {
                         );
                         computers.add(computer);
                     }
+                } catch (SQLException e) {
+                    throw new DatabaseException("Error adding computers: " + cartId, e);
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Error getting computers for cart: " + cartId, e);
         }
         return computers;
     }
@@ -140,7 +143,7 @@ public class CartService {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Error getting computer IDs for cart: " + cartId, e);
         }
 
         String sqlDeleteCartItem = "DELETE FROM cartItem WHERE cartId = ? AND computerId = ?";
@@ -154,7 +157,7 @@ public class CartService {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Error deleting computers for cart: " + cartId, e);
         }
     }
 }

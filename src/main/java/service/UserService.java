@@ -1,6 +1,7 @@
 package service;
 
 import connection.DatabaseConnectionManager;
+import exception.DatabaseException;
 import model.User;
 
 import java.sql.*;
@@ -31,7 +32,7 @@ public class UserService {
         } catch (SQLIntegrityConstraintViolationException e) {
             System.out.println("Error: The username '" + user.getUsername() + "' is already taken. Please choose a different username.");
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Error adding user to database: " + user, e);
         }
     }
 
@@ -45,7 +46,7 @@ public class UserService {
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Error removing user from database: " + user, e);
         }
     }
 
@@ -64,7 +65,7 @@ public class UserService {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Error getting balance byy user id: " + userId, e);
         }
         return balance;
     }
@@ -81,7 +82,7 @@ public class UserService {
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Error updating user's balance: " + userId, e);
         }
     }
 
@@ -97,7 +98,7 @@ public class UserService {
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Error deducting user's balance: " + userId, e);
         }
     }
 
@@ -112,7 +113,7 @@ public class UserService {
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Error updating user's password: " + username, e);
         }
     }
 
@@ -127,7 +128,7 @@ public class UserService {
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Error updating user's username: " + currentUsername, e);
         }
     }
 
@@ -145,7 +146,7 @@ public class UserService {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Error checking if users are present", e);
         }
         return usersExist;
     }
@@ -161,7 +162,7 @@ public class UserService {
                 return rs.getInt(1) > 0;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Error checking if username is present: " + username, e);
         }
         return false;
     }
@@ -183,7 +184,7 @@ public class UserService {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Error validating user's credentials: " + usernameToLogin, e);
         }
         return validLogin;
     }
@@ -208,7 +209,7 @@ public class UserService {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Error getting all user properties", e);
         }
         return users;
     }
@@ -228,7 +229,7 @@ public class UserService {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Error getting user's id by username: " + username, e);
         }
         return userId;
     }
@@ -248,10 +249,8 @@ public class UserService {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Error getting user's role by id: " + userId, e);
         }
         return role;
     }
-
-
 }
