@@ -1,6 +1,5 @@
 package store;
 
-import java.io.*;
 import java.util.*;
 
 import handler.CartHandler;
@@ -9,7 +8,6 @@ import util.Utility;
 import handler.ComputerHandler;
 import handler.UserHandler;
 
-import model.Computer;
 
 import service.ComputerService;
 import service.UserService;
@@ -29,14 +27,11 @@ public class Store {
     private final ComputerService computerService;
     private final UserService userService;
 
-    private final ArrayList<Computer> computers;
-
     private final IMediator mediator;
 
     private final Map<String, Runnable> commandMap = new HashMap<>();
 
     private boolean isLogout;
-    private boolean isComputerTableInitialized;
 
     public Store(IMediator mediator) {
         this.mediator = mediator;
@@ -48,14 +43,6 @@ public class Store {
         this.computerService = mediator.getComputerService();
         this.userService = mediator.getUserService();
 
-        this.computers = new ArrayList<>(Arrays.asList(
-                new Computer("1", "Vortex", "NVIDIA RTX 4090", 32, "Intel Core i9-13900K", 7000),
-                new Computer("2", "Titan", "NVIDIA RTX 4080", 16, "AMD Ryzen 9 7900X", 6200),
-                new Computer("3", "Phantom", "NVIDIA RTX 4070 Ti", 32, "Intel Core i7-13700KF", 5600),
-                new Computer("4", "Blaze", "NVIDIA RTX 4060", 16, "AMD Ryzen 7 7800X", 5000)
-        ));
-        loadConfig();
-        initializeComputerTable();
         initializeCommandMap();
     }
 
@@ -117,45 +104,6 @@ public class Store {
         System.out.println();
         isLogout = true;
     }
-
-    private void loadConfig() {
-        config = new Properties();
-        File configFile = new File("src/main/resources/config.properties");
-
-        if (!configFile.exists()) {
-            try (OutputStream output = new FileOutputStream(configFile)) {
-                config.setProperty("isComputerTableInitialized", "false");
-                config.store(output, null);
-            } catch (IOException io) {
-                io.printStackTrace();
-            }
-        }
-
-        try (InputStream input = new FileInputStream(configFile)) {
-            config.load(input);
-            isComputerTableInitialized = Boolean.parseBoolean(config.getProperty("isComputerTableInitialized", "false"));
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    private void saveConfig() {
-        try (OutputStream output = new FileOutputStream("src/main/resources/config.properties")) {
-            config.setProperty("isComputerTableInitialized", String.valueOf(isComputerTableInitialized));
-            config.store(output, null);
-        } catch (IOException io) {
-            io.printStackTrace();
-        }
-    }
-
-    private void initializeComputerTable() {
-        if (!isComputerTableInitialized) {
-            computerService.addComputersToDatabase(computers);
-            isComputerTableInitialized = true;
-            saveConfig();
-        }
-    }
-
 }
 
 
