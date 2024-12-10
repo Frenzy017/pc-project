@@ -38,12 +38,12 @@ public class CartHandler {
         this.cartService = mediator.getCartService();
     }
 
-    private String getUserId() {
+    private int getUserId() {
         return userHandler.currentUserID;
     }
 
     private int getCartIdForCurrentUser() {
-        String userId = getUserId();
+        int userId = getUserId();
         return cartService.getCartIdByUserId(userId);
     }
 
@@ -73,7 +73,7 @@ public class CartHandler {
     }
 
     private void handleCreateCart() {
-        String userId = getUserId();
+        int userId = getUserId();
 
         if (!cartService.userHasCart(userId)) {
             cartService.createCartForUser(userId);
@@ -117,7 +117,7 @@ public class CartHandler {
         int depositAmount = scanner.nextInt();
 
         if (depositAmount > 0) {
-            String userId = getUserId();
+            int userId = getUserId();
             userService.updateUserBalance(userId, depositAmount);
             System.out.println("Successfully deposited " + depositAmount + "$ to your account.");
         } else {
@@ -126,7 +126,7 @@ public class CartHandler {
     }
 
     private void handlePrintCart() {
-        String userId = getUserId();
+        int userId = getUserId();
         int cartId = getCartIdForCurrentUser();
 
         balance = userService.getBalanceById(userId);
@@ -156,7 +156,7 @@ public class CartHandler {
     }
 
     private void handlePurchaseCart() {
-        String userId = getUserId();
+        int userId = getUserId();
         int cartId = getCartIdForCurrentUser();
 
         List<Computer> computers = cartService.getComputersByCartId(cartId);

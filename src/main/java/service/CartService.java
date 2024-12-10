@@ -17,11 +17,11 @@ public class CartService {
     private final DatabaseConnectionManager dbManager = new DatabaseConnectionManager();
     private int cartId;
 
-    public void createCartForUser(String userId) {
+    public void createCartForUser(int userId) {
         try (Connection conn = dbManager.getConnection("users")) {
             String sql = "INSERT INTO Cart (userId) VALUES (?)";
             try (PreparedStatement ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
-                ps.setString(1, userId);
+                ps.setInt(1, userId);
                 ps.executeUpdate();
 
                 var rs = ps.getGeneratedKeys();
@@ -48,11 +48,11 @@ public class CartService {
         }
     }
 
-    public boolean userHasCart(String userId) {
+    public boolean userHasCart(int userId) {
         String sql = "SELECT COUNT(*) FROM cart WHERE userid = ?";
         try (Connection conn = dbManager.getConnection("users");
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, userId);
+            ps.setInt(1, userId);
             ResultSet resultSet = ps.executeQuery();
             if (resultSet.next()) {
                 return resultSet.getInt(1) > 0;
@@ -63,11 +63,11 @@ public class CartService {
         return false;
     }
 
-    public int getCartIdByUserId(String userId) {
+    public int getCartIdByUserId(int userId) {
         String sql = "SELECT cartId FROM Cart WHERE userId = ?";
         try (Connection conn = dbManager.getConnection("users");
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, userId);
+            ps.setInt(1, userId);
             ResultSet resultSet = ps.executeQuery();
             if (resultSet.next()) {
                 return resultSet.getInt("cartId");
