@@ -4,23 +4,19 @@ public class User {
     private int id;
     private String username;
     private String password;
-    private String role;
     private int balance;
+    private int role_Id;
 
-    public User(int id, String username, String password, int balance, String role) {
+    public User(int id, String username, String password, int balance, int role_Id) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.balance = balance;
-        this.role = role;
+        this.role_Id = role_Id;
     }
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getUsername() {
@@ -35,12 +31,19 @@ public class User {
         return this.balance;
     }
 
-    public String getRole() {
-        return this.role;
+    public int getRole_Id() {
+        return this.role_Id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setBalance(int balance) {
         this.balance = balance;
     }
 
+    public void setRole_Id(int role_Id) {
+        this.role_Id = role_Id;
+    }
 }
