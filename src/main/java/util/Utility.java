@@ -127,7 +127,7 @@ public class Utility {
     }
 
     public void returnToInterface() {
-        String currentUserID = mediator.getUserHandler().getCurrentUserID();
+        int currentUserID = mediator.getUserHandler().getCurrentUserID();
         System.out.println();
         System.out.print("Press Enter to return to the main interface...");
         scanner.nextLine();
