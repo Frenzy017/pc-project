@@ -69,7 +69,7 @@ public class Store {
     }
 
     public void showComputers() {
-        String currentUserID = userHandler.getCurrentUserID();
+        int currentUserID = userHandler.getCurrentUserID();
 
         if (userService.getUserRoleById(currentUserID).equals("admin")) {
             handleComputerSelectionAsAdmin();
