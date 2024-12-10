@@ -12,7 +12,7 @@ public class UserService {
     private final DatabaseConnectionManager dbManager = new DatabaseConnectionManager();
 
     public void addUserToDatabase(User user) {
-        String sql = "INSERT INTO users (username, password, balance, role) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO users (username, password, balance, role_id) VALUES (?, ?, ?, ?)";
 
         try (Connection usersConnection = dbManager.getConnection("users");
              PreparedStatement ps = usersConnection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -20,7 +20,7 @@ public class UserService {
             ps.setString(1, user.getUsername());
             ps.setString(2, user.getPassword());
             ps.setInt(3, user.getBalance());
-            ps.setString(4, user.getRole());
+            ps.setInt(4, user.getRole_Id());
 
             ps.executeUpdate();
 
@@ -55,14 +55,14 @@ public class UserService {
         }
     }
 
-    public int getBalanceById(String userId) {
+    public int getBalanceById(int userId) {
         String sql = "SELECT balance FROM users WHERE id = ?";
         int balance = 0;
 
         try (Connection conn = dbManager.getConnection("users");
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setString(1, userId);
+            ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
@@ -75,7 +75,7 @@ public class UserService {
         return balance;
     }
 
-    public void updateUserBalance(String userId, int amountToDeposit) {
+    public void updateUserBalance(int userId, int amountToDeposit) {
         String sql = "UPDATE users SET balance = ? WHERE id = ?";
         int updatedBalance = getBalanceById(userId) + amountToDeposit;
 
@@ -83,7 +83,7 @@ public class UserService {
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, updatedBalance);
-            ps.setString(2, userId);
+            ps.setInt(2, userId);
             ps.executeUpdate();
 
         } catch (SQLException e) {
@@ -91,7 +91,7 @@ public class UserService {
         }
     }
 
-    public void updateUserBalanceDeduct(String userId, int amountToDeduct) {
+    public void updateUserBalanceDeduct(int userId, int amountToDeduct) {
         String sql = "UPDATE users SET balance = ? WHERE id = ?";
         int updatedBalance = getBalanceById(userId) - amountToDeduct;
 
@@ -99,7 +99,7 @@ public class UserService {
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, updatedBalance);
-            ps.setString(2, userId);
+            ps.setInt(2, userId);
             ps.executeUpdate();
 
         } catch (SQLException e) {
@@ -196,7 +196,7 @@ public class UserService {
 
     public List<User> getAllUserProperties() {
         List<User> users = new ArrayList<>();
-        String sql = "SELECT id, username, password, balance, role FROM users";
+        String sql = "SELECT id, username, password, balance, role_id FROM users";
 
         try (Connection conn = dbManager.getConnection("users");
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -208,7 +208,7 @@ public class UserService {
                         rs.getString("username"),
                         rs.getString("password"),
                         rs.getInt("balance"),
-                        rs.getString("role")
+                        rs.getInt("role_id")
                 );
                 users.add(user);
             }
@@ -219,9 +219,9 @@ public class UserService {
         return users;
     }
 
-    public String getUserIdByUsername(String username) {
+    public int getUserIdByUsername(String username) {
         String sql = "SELECT id FROM users WHERE username = ?";
-        String userId = null;
+        int userId = 0;
 
         try (Connection conn = dbManager.getConnection("users");
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -230,7 +230,7 @@ public class UserService {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                userId = rs.getString("id");
+                userId = rs.getInt("id");
             }
 
         } catch (SQLException e) {
@@ -239,23 +239,19 @@ public class UserService {
         return userId;
     }
 
-    public String getUserRoleById(String userId) {
-        String sql = "SELECT role FROM users WHERE id = ?";
-        String role = null;
+    public String getUserRoleById(int userId) {
+        String sql = "SELECT r.role_name FROM users u JOIN roles r ON u.role_id = r.id WHERE u.id = ?";
 
         try (Connection conn = dbManager.getConnection("users");
              PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setString(1, userId);
+            ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
-
             if (rs.next()) {
-                role = rs.getString("role");
+                return rs.getString("role_name");
             }
-
         } catch (SQLException e) {
             throw new DatabaseException("Error getting user's role by id: " + userId, e);
         }
-        return role;
+        return null;
     }
 }
