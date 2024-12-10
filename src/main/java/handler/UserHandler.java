@@ -1,9 +1,9 @@
 package handler;
 
+import service.RoleService;
 import util.Utility;
 
 import java.util.Scanner;
-import java.util.UUID;
 import java.util.Comparator;
 import java.util.List;
 
@@ -18,23 +18,27 @@ public class UserHandler {
     private final Scanner scanner;
 
     private final UserService userService;
+    private final RoleService roleService;
 
     private final IMediator mediator;
 
-    public String currentUserID;
+    public int currentUserID;
 
     public UserHandler(IMediator mediator) {
         this.mediator = mediator;
         this.utility = mediator.getUtility();
         this.scanner = mediator.getScanner();
         this.userService = mediator.getUserService();
+        this.roleService = mediator.getRoleService();
     }
 
     public void handleCreateUser() {
         String username = utility.setUsername();
         String password = utility.setPassword();
 
-        User newUser = new User(0, username, password, 0, "user");
+        int roleId = roleService.getRoleId();
+
+        User newUser = new User(0, username, password, 0, roleId);
 
         userService.addUserToDatabase(newUser);
 
@@ -148,17 +152,17 @@ public class UserHandler {
         utility.printAdminStoreInterface();
     }
 
-    public void handleViewAllUsers() {
-        List<User> users = userService.getAllUserProperties();
-
-        users.sort(Comparator.comparing((User user) -> !user.getRole().equals("admin")).thenComparing(User::getUsername));
-
-        System.out.println("Registered Users:");
-
-        for (User user : users) {
-            System.out.println("ID: " + user.getId() + ", Username: " + user.getUsername() + ", Password: " + user.getPassword() + ", Balance: " + user.getBalance() + ", Role: " + user.getRole());
-        }
-    }
+//    public void handleViewAllUsers() {
+//        List<User> users = userService.getAllUserProperties();
+//
+//        users.sort(Comparator.comparing((User user) -> !user.getRole_Id().equals("admin")).thenComparing(User::getUsername));
+//
+//        System.out.println("Registered Users:");
+//
+//        for (User user : users) {
+//            System.out.println("ID: " + user.getId() + ", Username: " + user.getUsername() + ", Password: " + user.getPassword() + ", Balance: " + user.getBalance() + ", Role: " + user.getRole_Id());
+//        }
+//    }
 
     public void handleViewAllUserOptions() {
         System.out.print("Do you want to modify any user's data?  [Yes / No] ");
@@ -192,7 +196,7 @@ public class UserHandler {
         }
     }
 
-    public String getCurrentUserID() {
+    public int getCurrentUserID() {
         return currentUserID;
     }
 
