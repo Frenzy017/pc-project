@@ -5,6 +5,7 @@ import handler.ComputerHandler;
 import handler.UserHandler;
 import service.CartService;
 import service.ComputerService;
+import service.RoleService;
 import service.UserService;
 import store.Store;
 import util.Utility;
@@ -25,4 +26,5 @@ public interface IMediator {
     CartService getCartService();
     UserService getUserService();
     ComputerService getComputerService();
+    RoleService getRoleService();
 }

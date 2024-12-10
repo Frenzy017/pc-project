@@ -5,6 +5,7 @@ import handler.ComputerHandler;
 import handler.UserHandler;
 import service.CartService;
 import service.ComputerService;
+import service.RoleService;
 import service.UserService;
 import store.Store;
 import util.Utility;
@@ -24,6 +25,7 @@ public class Mediator implements IMediator {
     private final UserService userService = new UserService();
     private final ComputerService computerService = new ComputerService();
     private final CartService cartService = new CartService();
+    private final RoleService roleService = new RoleService();
 
     @Override
     public void notify(Object sender, String event) {
@@ -35,7 +37,7 @@ public class Mediator implements IMediator {
             case "login" -> userHandler.handleLoginUser();
             case "showComputers" -> store.showComputers();
             case "viewUsers" -> {
-                userHandler.handleViewAllUsers();
+//                userHandler.handleViewAllUsers();
                 userHandler.handleViewAllUserOptions();
             }
             case "logout" -> store.logout();
@@ -90,6 +92,10 @@ public class Mediator implements IMediator {
 
     public CartService getCartService() {
         return cartService;
+    }
+
+    public RoleService getRoleService() {
+        return roleService;
     }
 
 }
