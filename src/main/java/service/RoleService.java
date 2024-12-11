@@ -26,8 +26,8 @@ public class RoleService {
         }
     }
 
-    public int getRoleId() {
-        String sql = "SELECT id FROM roles WHERE role_name = 'user' LIMIT 1";
+    public int getDefaultUserRole() {
+        String sql = "SELECT id FROM roles WHERE role_name = 'user' ";
         int roleId = 0;
 
         try (Connection conn = dbManager.getConnection("users");
@@ -44,24 +44,20 @@ public class RoleService {
         return roleId;
     }
 
-    public String getRoleNameById(int roleId) {
-        String sql = "SELECT role_name FROM roles WHERE id = ?";
-        String roleName = null;
+    public String getUserRoleById(int userId) {
+        String sql = "SELECT r.role_name FROM users u JOIN roles r ON u.role_id = r.id WHERE u.id = ?";
 
         try (Connection conn = dbManager.getConnection("users");
              PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, roleId);
+            ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
-
             if (rs.next()) {
-                roleName = rs.getString("role_name");
+                return rs.getString("role_name");
             }
-
         } catch (SQLException e) {
-            throw new DatabaseException("Error getting role name by id: " + roleId, e);
+            throw new DatabaseException("Error getting user's role by id: " + userId, e);
         }
-        return roleName;
+        return null;
     }
 
 
