@@ -3,6 +3,7 @@ package store;
 import java.util.*;
 
 import handler.CartHandler;
+import service.RoleService;
 import util.Utility;
 
 import handler.ComputerHandler;
@@ -12,11 +13,10 @@ import handler.UserHandler;
 import service.ComputerService;
 import service.UserService;
 
+
 import mediator.IMediator;
 
 public class Store {
-    private Properties config;
-
     private final Utility utility;
     private final Scanner scanner;
 
@@ -26,6 +26,7 @@ public class Store {
 
     private final ComputerService computerService;
     private final UserService userService;
+    private final RoleService roleService;
 
     private final IMediator mediator;
 
@@ -42,6 +43,7 @@ public class Store {
         this.cartHandler = mediator.getCartHandler();
         this.computerService = mediator.getComputerService();
         this.userService = mediator.getUserService();
+        this.roleService = mediator.getRoleService();
 
         initializeCommandMap();
     }
@@ -71,7 +73,7 @@ public class Store {
     public void showComputers() {
         int currentUserID = userHandler.getCurrentUserID();
 
-        if (userService.getUserRoleById(currentUserID).equals("admin")) {
+        if (roleService.getUserRoleById(currentUserID).equals("admin")) {
             handleComputerSelectionAsAdmin();
         } else {
             handleComputerSelectionAsUser();
@@ -90,7 +92,7 @@ public class Store {
     }
 
     public void printInterfaceBasedOnUserRole() {
-        String role = userService.getUserRoleById(userHandler.currentUserID);
+        String role = roleService.getUserRoleById(userHandler.currentUserID);
 
         if (role.equals("admin")) {
             utility.printAdminStoreInterface();
