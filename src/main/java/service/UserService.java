@@ -238,20 +238,4 @@ public class UserService {
         }
         return userId;
     }
-
-    public String getUserRoleById(int userId) {
-        String sql = "SELECT r.role_name FROM users u JOIN roles r ON u.role_id = r.id WHERE u.id = ?";
-
-        try (Connection conn = dbManager.getConnection("users");
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, userId);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return rs.getString("role_name");
-            }
-        } catch (SQLException e) {
-            throw new DatabaseException("Error getting user's role by id: " + userId, e);
-        }
-        return null;
-    }
 }
