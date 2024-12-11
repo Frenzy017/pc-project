@@ -15,10 +15,6 @@ public class Utility {
 
     static Scanner scanner = new Scanner(System.in);
 
-    public void invalidCommand() {
-        System.out.println("Invalid command, please try again! ");
-    }
-
     public void printAccountOptions() {
         System.out.println("Choose a command before you continue: ");
 
@@ -100,6 +96,21 @@ public class Utility {
         System.out.print("");
     }
 
+    public void printCustomConfigurationOptions() {
+        System.out.println();
+        System.out.println("╔════════════════════════════════════════╗");
+        System.out.println("║  Please choose a configuration option  ║");
+        System.out.println("║  by typing the corresponding number:   ║");
+        System.out.println("╠════════════════════════════════════════╣");
+        System.out.println("║ 1. Processor Configuration             ║");
+        System.out.println("║ 2. RAM Configuration                   ║");
+        System.out.println("║ 3. Video Card Configuration            ║");
+        System.out.println("║ 4. Check your computer build status    ║");
+        System.out.println("╚════════════════════════════════════════╝");
+        System.out.println();
+        System.out.print("Configuration option: ");
+    }
+
     public void printModificationOptions() {
         System.out.println("Which parameter do you want to modify?");
         System.out.println("1. Name");
@@ -109,6 +120,13 @@ public class Utility {
         System.out.println("5. Price");
 
         System.out.print("Please enter the number which corresponds with the value you want to modify: ");
+    }
+
+    public void returnToConfigurationOptions() {
+        System.out.println();
+        System.out.print("Press Enter to return to the main interface...");
+        scanner.nextLine();
+        printCustomConfigurationOptions();
     }
 
 
@@ -131,7 +149,7 @@ public class Utility {
         System.out.println();
         System.out.print("Press Enter to return to the main interface...");
         scanner.nextLine();
-        if (mediator.getUserService().getUserRoleById(currentUserID).equals("admin")) {
+        if (mediator.getRoleService().getUserRoleById(currentUserID).equals("admin")) {
             printAdminStoreInterface();
         } else {
             printStoreInterface();
@@ -144,7 +162,6 @@ public class Utility {
         scanner.nextLine();
         printCartInterface();
     }
-
 
     public String setUsername() {
         System.out.print("Please enter an username: ");
