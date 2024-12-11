@@ -1,9 +1,14 @@
 package handler;
 
+import service.ComputerService;
 import service.UserService;
+import service.component.ProcessorService;
+import service.component.RamService;
+import service.component.VideoService;
 import util.Utility;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import model.CartItem;
@@ -22,6 +27,11 @@ public class CartHandler {
 
     private final UserService userService;
     private final CartService cartService;
+    private final ComputerService computerService;
+
+    private final ProcessorService processorService;
+    private final RamService ramService;
+    private final VideoService videoService;
 
     private final IMediator mediator;
 
@@ -36,6 +46,10 @@ public class CartHandler {
         this.computerHandler = mediator.getComputerHandler();
         this.userService = mediator.getUserService();
         this.cartService = mediator.getCartService();
+        this.computerService = mediator.getComputerService();
+        this.processorService = mediator.getProcessorService();
+        this.ramService = mediator.getRamService();
+        this.videoService = mediator.getVideoService();
     }
 
     private int getUserId() {
@@ -46,7 +60,6 @@ public class CartHandler {
         int userId = getUserId();
         return cartService.getCartIdByUserId(userId);
     }
-
 
     public void handleCart() {
         utility.printCartInterface();
@@ -81,17 +94,21 @@ public class CartHandler {
     }
 
     public void handleAddCartItem() {
+        handleCreateCart();
+
         Computer selectedComputer = computerHandler.getSelectedComputer();
 
         System.out.print("Do you want to add this computer to your cart? [Yes / No] ");
+
+        scanner.nextLine();
 
         String command = scanner.nextLine();
 
         if (command.equalsIgnoreCase("Yes")) {
             int cartId = getCartIdForCurrentUser();
-
             int computerId = selectedComputer.getId();
-            double computerPrice = selectedComputer.getPrice();
+
+            double computerPrice = selectedComputer.getTotalPrice();
 
             cartService.addToCart(new CartItem(cartId, computerId, computerPrice));
 
@@ -133,7 +150,7 @@ public class CartHandler {
 
         List<Computer> computers = cartService.getComputersByCartId(cartId);
 
-        totalPrice = computers.stream().mapToInt(Computer::getPrice).sum();
+        totalPrice = computers.stream().mapToInt(Computer::getTotalPrice).sum();
 
         System.out.println("Currently you have " + computers.size() + " computers in your cart.");
         System.out.println("Your current balance is: " + balance + "$.");
@@ -148,9 +165,12 @@ public class CartHandler {
             System.out.println();
 
             for (Computer computer : computers) {
+                Map<String, Object> componentDetails = computerHandler.getComponentDetails(computer);
+
                 System.out.println(String.format(
-                        "Computer name: %s, RAM: %dGB, Processor: %s, Price: %d$",
-                        computer.getName(), computer.getRam(), computer.getProcessor(), computer.getPrice()));
+                        "Computer name: %s, Processor: %s, RAM: %dGB, Video card: %s, Price: %d$",
+                        computer.getName(), componentDetails.get("processorName"), componentDetails.get("ramCapacity"),
+                        componentDetails.get("videoCardName"), computer.getTotalPrice()));
             }
         }
     }
@@ -174,18 +194,25 @@ public class CartHandler {
                 System.out.println("Insufficient balance. You're missing: " + deficit + "$" + " to purchase your products.");
                 System.out.println("Please deposit more money to proceed.");
                 utility.returnToCartInterface();
-            } else {
-                userService.updateUserBalanceDeduct(userId, totalPrice);
-                cartService.deleteComputersByCartId(cartId);
-
-                System.out.println("Purchase successful! You have bought " + computers.size() + " computers.");
-
-                utility.returnToCartInterface();
             }
+            for (Computer computer : computers) {
+                int processorId = computer.getProcessor_id();
+                int ramId = computer.getRam_id();
+                int videoCardId = computer.getVideoCard_id();
 
-        } else if (command.equalsIgnoreCase("No")) {
-            utility.returnToCartInterface();
+                processorService.decreaseProcessorQuantityByOne(processorId);
+                ramService.decreaseRamQuantityByOne(ramId);
+                videoService.decreaseVideoCardQuantityByOne(videoCardId);
+
+                if (computer.getName().equals("customComputer")) {
+                    computerService.deleteComputerInDatabase(computer.getName());
+                }
+            }
+            userService.updateUserBalanceDeduct(userId, totalPrice);
+            cartService.deleteComputersByCartId(cartId);
+            System.out.println("Purchase successful! You have bought " + computers.size() + " computers.");
         }
+        utility.returnToCartInterface();
     }
 
     private void handlePurchaseIfNotEmpty() {
