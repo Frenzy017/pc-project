@@ -3,38 +3,42 @@ package model;
 public class Computer {
     public int id;
     public String name;
-    public String graphicCard;
-    public String processor;
-    public int ram;
-    public int price;
+    public int processor_id;
+    public int ram_id;
+    public int videoCard_id;
+    public int totalPrice;
 
-    public Computer(int id, String name, String graphicCard, int ram, String processor, int price) {
+    public Computer(int id, String name, int processor_id, int ram_id, int videoCard_id, int totalPrice) {
         this.id = id;
         this.name = name;
-        this.graphicCard = graphicCard;
-        this.ram = ram;
-        this.processor = processor;
-        this.price = price;
+        this.processor_id = processor_id;
+        this.ram_id = ram_id;
+        this.videoCard_id = videoCard_id;
+        this.totalPrice = totalPrice;
+    }
+
+    public void setId(int computerId) {
+        this.id = computerId;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public void setGraphicCard(String graphicCard) {
-        this.graphicCard = graphicCard;
+    public void setVideCard_id(int videoCard_id) {
+        this.videoCard_id = this.videoCard_id;
     }
 
-    public void setRam(int ram) {
-        this.ram = ram;
+    public void setRam_id(int ram_id) {
+        this.ram_id = ram_id;
     }
 
-    public void setProcessor(String processor) {
-        this.processor = processor;
+    public void setProcessor_id(int processor_id) {
+        this.processor_id = processor_id;
     }
 
-    public void setPrice(int price) {
-        this.price = price;
+    public void setTotalPrice(int totalPrice) {
+        this.totalPrice = totalPrice;
     }
 
     public int getId() {
@@ -45,24 +49,26 @@ public class Computer {
         return this.name;
     }
 
-    public String getGraphicCard() {
-        return this.graphicCard;
+    public int getVideoCard_id() {
+        return this.videoCard_id;
     }
 
-    public int getRam() {
-        return this.ram;
+    public int getRam_id() {
+        return this.ram_id;
     }
 
-    public String getProcessor() {
-        return this.processor;
+    public int getProcessor_id() {
+        return this.processor_id;
     }
 
-    public int getPrice() {
-        return this.price;
+    public int getTotalPrice() {
+        return this.totalPrice;
     }
 
     @Override
     public String toString() {
-        return name + ", with the Specifications: " + graphicCard + ", " + ram + "GB RAM, " + processor + ", Price: " + price + "$";
+        return name + ", with the Specifications: " + videoCard_id + ", " + ram_id + "GB RAM, " + processor_id + ", Price: " + totalPrice + "$";
     }
+
+
 }
