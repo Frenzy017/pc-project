@@ -4,7 +4,6 @@ import service.RoleService;
 import util.Utility;
 
 import java.util.Scanner;
-import java.util.Comparator;
 import java.util.List;
 
 import mediator.IMediator;
@@ -36,9 +35,9 @@ public class UserHandler {
         String username = utility.setUsername();
         String password = utility.setPassword();
 
-        int roleId = roleService.getRoleId();
+        int role_Id = roleService.getDefaultUserRole();
 
-        User newUser = new User(0, username, password, 0, roleId);
+        User newUser = new User(0, username, password, 0, role_Id);
 
         userService.addUserToDatabase(newUser);
 
@@ -68,7 +67,7 @@ public class UserHandler {
 
             System.out.println("You have successfully logged in!");
 
-            if (userService.getUserRoleById(currentUserID).equals("admin")) {
+            if (roleService.getUserRoleById(currentUserID).equals("admin")) {
                 utility.printAdminStoreInterface();
             } else {
                 utility.printStoreInterface();
@@ -77,7 +76,6 @@ public class UserHandler {
         } else {
             System.out.println("Wrong input!");
             System.out.println();
-            utility.invalidCommand();
             System.out.println();
 
             mediator.notify(this, "start");
@@ -151,18 +149,15 @@ public class UserHandler {
         System.out.println("You have successfully updated the user's username!");
         utility.printAdminStoreInterface();
     }
+    public void handleViewAllUsers() {
+        List<User> users = userService.getAllUserProperties();
 
-//    public void handleViewAllUsers() {
-//        List<User> users = userService.getAllUserProperties();
-//
-//        users.sort(Comparator.comparing((User user) -> !user.getRole_Id().equals("admin")).thenComparing(User::getUsername));
-//
-//        System.out.println("Registered Users:");
-//
-//        for (User user : users) {
-//            System.out.println("ID: " + user.getId() + ", Username: " + user.getUsername() + ", Password: " + user.getPassword() + ", Balance: " + user.getBalance() + ", Role: " + user.getRole_Id());
-//        }
-//    }
+        System.out.println("Registered Users:");
+
+        for (User user : users) {
+            System.out.println("ID: " + user.getId() + ", Username: " + user.getUsername() + ", Password: " + user.getPassword() + ", Balance: " + user.getBalance() + ", Role: " + user.getRole_Id());
+        }
+    }
 
     public void handleViewAllUserOptions() {
         System.out.print("Do you want to modify any user's data?  [Yes / No] ");
