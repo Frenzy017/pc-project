@@ -3,10 +3,16 @@ package mediator;
 import handler.CartHandler;
 import handler.ComputerHandler;
 import handler.UserHandler;
+import handler.component.ProcessorHandler;
+import handler.component.RamHandler;
+import handler.component.VideoCardHandler;
 import service.CartService;
 import service.ComputerService;
 import service.RoleService;
 import service.UserService;
+import service.component.ProcessorService;
+import service.component.RamService;
+import service.component.VideoService;
 import store.Store;
 import util.Utility;
 
@@ -22,10 +28,18 @@ public class Mediator implements IMediator {
     private ComputerHandler computerHandler;
     private CartHandler cartHandler;
 
+    private ProcessorHandler processorHandler;
+    private RamHandler ramHandler;
+    private VideoCardHandler videoCardHandler;
+
     private final UserService userService = new UserService();
     private final ComputerService computerService = new ComputerService();
     private final CartService cartService = new CartService();
     private final RoleService roleService = new RoleService();
+
+    private final ProcessorService processorService = new ProcessorService();
+    private final RamService ramService = new RamService();
+    private final VideoService videoService = new VideoService();
 
     @Override
     public void notify(Object sender, String event) {
@@ -37,7 +51,7 @@ public class Mediator implements IMediator {
             case "login" -> userHandler.handleLoginUser();
             case "showComputers" -> store.showComputers();
             case "viewUsers" -> {
-//                userHandler.handleViewAllUsers();
+                userHandler.handleViewAllUsers();
                 userHandler.handleViewAllUserOptions();
             }
             case "logout" -> store.logout();
@@ -82,6 +96,32 @@ public class Mediator implements IMediator {
         return cartHandler;
     }
 
+
+    @Override
+    public ProcessorHandler getProcessorHandler() {
+        if (processorHandler == null) {
+            processorHandler = new ProcessorHandler(this);
+        }
+        return processorHandler;
+    }
+
+    @Override
+    public RamHandler getRamHandler() {
+        if (ramHandler == null) {
+            ramHandler = new RamHandler(this);
+        }
+        return ramHandler;
+    }
+
+    @Override
+    public VideoCardHandler getVideoCardHandler() {
+        if (videoCardHandler == null) {
+            videoCardHandler = new VideoCardHandler(this);
+        }
+        return videoCardHandler;
+    }
+
+
     public UserService getUserService() {
         return userService;
     }
@@ -98,4 +138,15 @@ public class Mediator implements IMediator {
         return roleService;
     }
 
+    public ProcessorService getProcessorService() {
+        return processorService;
+    }
+
+    public RamService getRamService() {
+        return ramService;
+    }
+
+    public VideoService getVideoService() {
+        return videoService;
+    }
 }
