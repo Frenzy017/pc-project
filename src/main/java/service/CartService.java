@@ -98,7 +98,7 @@ public class CartService {
             throw new DatabaseException("Error getting computers ids: " + cartId, e);
         }
 
-        String sqlComputers = "SELECT id, name, graphicCard, ram, processor, price FROM computers WHERE id = ?";
+        String sqlComputers = "SELECT id, name, processor_id, ram_id, videoCard_id, totalPrice FROM computers WHERE id = ?";
 
         try (Connection conn = dbManager.getConnection("computers")) {
             for (String computerId : computerIds) {
@@ -110,10 +110,10 @@ public class CartService {
                         Computer computer = new Computer(
                                 rs.getInt("id"),
                                 rs.getString("name"),
-                                rs.getString("graphicCard"),
-                                rs.getInt("ram"),
-                                rs.getString("processor"),
-                                rs.getInt("price")
+                                rs.getInt("processor_id"),
+                                rs.getInt("ram_id"),
+                                rs.getInt("videoCard_id"),
+                                rs.getInt("totalPrice")
                         );
                         computers.add(computer);
                     }
