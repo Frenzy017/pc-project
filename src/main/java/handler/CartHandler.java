@@ -195,14 +195,31 @@ public class CartHandler {
                 System.out.println("Please deposit more money to proceed.");
                 utility.returnToCartInterface();
             }
-            for (Computer computer : computers) {
-                int processorId = computer.getProcessor_id();
-                int ramId = computer.getRam_id();
-                int videoCardId = computer.getVideoCard_id();
 
-                processorService.decreaseProcessorQuantityByOne(processorId);
-                ramService.decreaseRamQuantityByOne(ramId);
-                videoService.decreaseVideoCardQuantityByOne(videoCardId);
+            System.out.println("Purchase successful! You have bought " + computers.size() + " computers.");
+
+            for (Computer computer : computers) {
+
+                Map<String, Object> componentDetails = computerHandler.getComponentDetails(computer);
+
+                processorService.decreaseProcessorQuantityByOne((int) componentDetails.get("processorId"));
+                ramService.decreaseRamQuantityByOne((int) componentDetails.get("ramId"));
+                videoService.decreaseVideoCardQuantityByOne((int) componentDetails.get("videoCardId"));
+
+                if ((int) componentDetails.get("processorQuantity") == 0) {
+                    System.out.println("Processor has been sold out: " + componentDetails.get("processorName"));
+                    processorService.deleteProcessorById((int) componentDetails.get("processorId"));
+                }
+
+                if ((int) componentDetails.get("ramQuantity") == 0) {
+                    System.out.println("RAM has been sold out: " + componentDetails.get("ramCapacity"));
+                    ramService.deleteRamById((int) componentDetails.get("ramId"));
+                }
+
+                if ((int) componentDetails.get("videoCardQuantity") == 0) {
+                    System.out.println("Video card has been sold out: " + componentDetails.get("videoCardName"));
+                    videoService.deleteVideoCardById((int) componentDetails.get("videoCardId"));
+                }
 
                 if (computer.getName().equals("customComputer")) {
                     computerService.deleteComputerInDatabase(computer.getName());
@@ -210,7 +227,6 @@ public class CartHandler {
             }
             userService.updateUserBalanceDeduct(userId, totalPrice);
             cartService.deleteComputersByCartId(cartId);
-            System.out.println("Purchase successful! You have bought " + computers.size() + " computers.");
         }
         utility.returnToCartInterface();
     }
