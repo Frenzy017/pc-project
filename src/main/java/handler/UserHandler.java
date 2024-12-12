@@ -149,13 +149,22 @@ public class UserHandler {
         System.out.println("You have successfully updated the user's username!");
         utility.printAdminStoreInterface();
     }
+
     public void handleViewAllUsers() {
         List<User> users = userService.getAllUserProperties();
 
         System.out.println("Registered Users:");
 
         for (User user : users) {
-            System.out.println("ID: " + user.getId() + ", Username: " + user.getUsername() + ", Password: " + user.getPassword() + ", Balance: " + user.getBalance() + ", Role: " + user.getRole_Id());
+
+            System.out.println(
+                    // @formatter:off
+                            "ID: " + user.getId() + ", " +
+                            "Username: " + user.getUsername() + ", " +
+                            "Password: " + user.getPassword() + ", " +
+                            "Balance: " + user.getBalance() + ", " +
+                            "Role: " + roleService.getUserRoleById(user.getId()));
+                    // @formatter:on
         }
     }
 
