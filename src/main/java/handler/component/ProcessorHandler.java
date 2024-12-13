@@ -24,6 +24,15 @@ public class ProcessorHandler {
     }
 
     public void handleProcessorConfig() {
+        printProcessorOptions();
+
+        System.out.println("You have selected then following processor: " + processorObject.getName() + "," + " Price: " + processorObject.getPrice() + "$");
+        System.out.println();
+        System.out.println("Please proceed further with the other options to complete your build!");
+        System.out.println();
+    }
+
+    public void printProcessorOptions() {
         List<Processor> processors = processorService.getAllProcessors();
 
         System.out.println("Here are the available processors: ");
@@ -38,11 +47,24 @@ public class ProcessorHandler {
 
         int processorChoice = scanner.nextInt();
         processorObject = processors.get(processorChoice - 1);
+    }
 
-        System.out.println("You have selected then following processor: " + processorObject.getName() + "," + " Price: " + processorObject.getPrice() + "$");
+    public void printProcessorQuantity() {
+        List<Processor> processors = processorService.getAllProcessors();
+
         System.out.println();
-        System.out.println("Please proceed further with the other options to complete your build!");
+        System.out.println("Here are the available processors: ");
+
+        int index = 1;
+        for (Processor processor : processors) {
+            System.out.println(index++ + "." + "Processor: " + processor.getName() + " -" + " Quantity: " + processor.getQuantity());
+        }
+
         System.out.println();
+        System.out.print("Please choose a processor: ");
+
+        int processorChoice = scanner.nextInt();
+        processorObject = processors.get(processorChoice - 1);
     }
 
     public Processor getProcessorObject() {
