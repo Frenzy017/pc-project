@@ -25,8 +25,8 @@ public class Computer {
         this.name = name;
     }
 
-    public void setVideCard_id(int videoCard_id) {
-        this.videoCard_id = this.videoCard_id;
+    public void setVideoCard_id(int videoCard_id) {
+        this.videoCard_id = videoCard_id;
     }
 
     public void setRam_id(int ram_id) {
@@ -40,6 +40,7 @@ public class Computer {
     public void setTotalPrice(int totalPrice) {
         this.totalPrice = totalPrice;
     }
+
 
     public int getId() {
         return this.id;
@@ -64,11 +65,5 @@ public class Computer {
     public int getTotalPrice() {
         return this.totalPrice;
     }
-
-    @Override
-    public String toString() {
-        return name + ", with the Specifications: " + videoCard_id + ", " + ram_id + "GB RAM, " + processor_id + ", Price: " + totalPrice + "$";
-    }
-
 
 }
