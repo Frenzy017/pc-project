@@ -28,4 +28,12 @@ public class VideoCard {
     public int getPrice() {
         return price;
     }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public void setId(int generatedId) {
+        this.id = generatedId;
+    }
 }
