@@ -44,7 +44,6 @@ public class Store {
         this.computerService = mediator.getComputerService();
         this.userService = mediator.getUserService();
         this.roleService = mediator.getRoleService();
-
         initializeCommandMap();
     }
 
