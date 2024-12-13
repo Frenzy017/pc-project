@@ -46,6 +46,36 @@ public class RamService {
         return price;
     }
 
+    public int getRamQuantityById(int ramId) {
+        String sql = "SELECT quantity FROM ram WHERE id =?";
+        int quantity = 0;
+        try (Connection conn = dbManager.getConnection("computers");
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, ramId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                quantity = rs.getInt("quantity");
+            }
+
+        } catch (SQLException e) {
+            throw new DatabaseException("Error retrieving ram quantity for ID " + ramId, e);
+        }
+        return quantity;
+    }
+
+    public void updateRamQuantityInDatabase(Ram selectedRam) {
+        String sql = "UPDATE ram SET quantity = ? WHERE id = ?";
+        try (Connection conn = dbManager.getConnection("computers");
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, selectedRam.getQuantity());
+            ps.setInt(2, selectedRam.getId());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new DatabaseException("Error updating RAM quantity for ID: " + selectedRam.getId(), e);
+        }
+    }
+
     public List<Ram> getAllRam() {
         String sql = "SELECT id, capacity, quantity, price FROM ram";
         List<Ram> ram = new ArrayList<>();
@@ -79,6 +109,20 @@ public class RamService {
             }
         } catch (SQLException e) {
             throw new DatabaseException("Error decreasing RAM quantity for ID: " + ramId, e);
+        }
+    }
+
+    public void deleteRamById(int ramId) {
+        String sql = "DELETE FROM ram WHERE id = ?";
+        try (Connection conn = dbManager.getConnection("computers");
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, ramId);
+            int rowsDeleted = ps.executeUpdate();
+            if (rowsDeleted == 0) {
+                throw new DatabaseException("No RAM found with ID: " + ramId, new SQLException());
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Error deleting RAM with ID: " + ramId, e);
         }
     }
 }
