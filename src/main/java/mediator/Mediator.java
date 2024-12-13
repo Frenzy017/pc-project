@@ -96,7 +96,6 @@ public class Mediator implements IMediator {
         return cartHandler;
     }
 
-
     @Override
     public ProcessorHandler getProcessorHandler() {
         if (processorHandler == null) {
