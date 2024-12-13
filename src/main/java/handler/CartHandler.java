@@ -222,7 +222,7 @@ public class CartHandler {
                 }
 
                 if (computer.getName().equals("customComputer")) {
-                    computerService.deleteComputerInDatabase(computer.getName());
+                    computerService.deleteComputerInDatabaseByName(computer.getName());
                 }
             }
             userService.updateUserBalanceDeduct(userId, totalPrice);
