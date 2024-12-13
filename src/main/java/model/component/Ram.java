@@ -6,7 +6,6 @@ public class Ram {
     private int quantity;
     private int price;
 
-
     public Ram(int id, int capacity, int quantity, int price) {
         this.id = id;
         this.capacity = capacity;
@@ -30,4 +29,11 @@ public class Ram {
         return price;
     }
 
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public void setId(int generatedId) {
+        this.id = generatedId;
+    }
 }
