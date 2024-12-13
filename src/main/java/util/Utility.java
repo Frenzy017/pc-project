@@ -114,10 +114,10 @@ public class Utility {
     public void printModificationOptions() {
         System.out.println("Which parameter do you want to modify?");
         System.out.println("1. Name");
-        System.out.println("2. GraphicCard");
+        System.out.println("2. Processor");
         System.out.println("3. RAM");
-        System.out.println("4. Processor");
-        System.out.println("5. Price");
+        System.out.println("4. Video card");
+        System.out.println("5. Quantity");
 
         System.out.print("Please enter the number which corresponds with the value you want to modify: ");
     }
