@@ -7,6 +7,7 @@ import java.util.List;
 import connection.DatabaseConnectionManager;
 import exception.DatabaseException;
 import model.Computer;
+import model.component.Processor;
 
 public class ComputerService {
     private final DatabaseConnectionManager dbManager = new DatabaseConnectionManager();
@@ -44,9 +45,9 @@ public class ComputerService {
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, computer.getName());
-            ps.setInt(2, computer.getVideoCard_id());
+            ps.setInt(2, computer.getProcessor_id());
             ps.setInt(3, computer.getRam_id());
-            ps.setInt(4, computer.getProcessor_id());
+            ps.setInt(4, computer.getVideoCard_id());
             ps.setInt(5, computer.getTotalPrice());
             ps.setInt(6, computer.getId());
 
@@ -71,8 +72,8 @@ public class ComputerService {
         }
     }
 
-    public void deleteComputerInDatabase(String name) {
-        String sql = "DELETE FROM computers WHERE name = ?";
+    public void deleteComputerInDatabaseByName(String name) {
+        String sql = "DELETE FROM computers WHERE id = ?";
 
         try (Connection conn = dbManager.getConnection("computers");
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -80,7 +81,19 @@ public class ComputerService {
             ps.setString(1, name);
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new DatabaseException("Error deleting computer from database: " + name, e);
+            throw new DatabaseException("Error deleting computer from database by name: " + name, e);
+        }
+    }
+
+    public void deleteComputerInDatabaseById(int computerId) {
+        String sql = "DELETE FROM computers WHERE id = ?";
+
+        try (Connection conn = dbManager.getConnection("computers");
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, computerId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new DatabaseException("Error deleting computer from database by ID: " + computerId, e);
         }
     }
 
