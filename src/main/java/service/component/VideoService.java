@@ -2,7 +2,6 @@ package service.component;
 
 import connection.DatabaseConnectionManager;
 import exception.DatabaseException;
-import model.component.Ram;
 import model.component.VideoCard;
 
 import java.sql.Connection;
@@ -47,6 +46,36 @@ public class VideoService {
         return price;
     }
 
+    public int getVideoCardQuantityById(int videoCardId) {
+        String sql = "SELECT quantity FROM videoCard WHERE id =?";
+        int quantity = 0;
+        try (Connection conn = dbManager.getConnection("computers");
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, videoCardId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                quantity = rs.getInt("quantity");
+            }
+
+        } catch (SQLException e) {
+            throw new DatabaseException("Error retrieving video card quantity for ID " + videoCardId, e);
+        }
+        return quantity;
+    }
+
+    public void updateVideoCardQuantityInDatabase(VideoCard selectedVideoCard) {
+        String sql = "UPDATE videoCard SET quantity = ? WHERE id = ?";
+        try (Connection conn = dbManager.getConnection("computers");
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, selectedVideoCard.getQuantity());
+            ps.setInt(2, selectedVideoCard.getId());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new DatabaseException("Error updating video card quantity for ID: " + selectedVideoCard.getId(), e);
+        }
+    }
+
     public List<VideoCard> getAllVideoCards() {
         String sql = "SELECT id, name, quantity, price FROM videoCard";
         List<VideoCard> videoCards = new ArrayList<>();
@@ -82,4 +111,40 @@ public class VideoService {
             throw new DatabaseException("Error decreasing video card quantity for ID: " + videoCardId, e);
         }
     }
+
+    public void deleteVideoCardById(int videoCardId) {
+        String sql = "DELETE FROM video_card WHERE id = ?";
+        try (Connection conn = dbManager.getConnection("computers");
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, videoCardId);
+            int rowsDeleted = ps.executeUpdate();
+            if (rowsDeleted == 0) {
+                throw new DatabaseException("No video card found with ID: " + videoCardId, new SQLException());
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Error deleting video card with ID: " + videoCardId, e);
+        }
+    }
+
+    public void createVideoCard(VideoCard videoCard) {
+        String sql = "INSERT INTO videoCard (name, quantity, price) VALUES (?, ?, ?)";
+        try (Connection conn = dbManager.getConnection("computers");
+             PreparedStatement ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, videoCard.getName());
+            ps.setInt(2, videoCard.getQuantity());
+            ps.setInt(3, videoCard.getPrice());
+            ps.executeUpdate();
+
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    int generatedId = rs.getInt(1);
+                    videoCard.setId(generatedId);
+                }
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Error creating video card in database", e);
+        }
+    }
+
+
 }
