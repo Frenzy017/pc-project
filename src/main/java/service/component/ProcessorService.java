@@ -46,6 +46,36 @@ public class ProcessorService {
         return price;
     }
 
+    public int getProcessorQuantityById(int processorId) {
+        String sql = "SELECT quantity FROM processor WHERE id =?";
+        int quantity = 0;
+        try (Connection conn = dbManager.getConnection("computers");
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, processorId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                quantity = rs.getInt("quantity");
+            }
+
+        } catch (SQLException e) {
+            throw new DatabaseException("Error retrieving processor quantity for ID " + processorId, e);
+        }
+        return quantity;
+    }
+
+    public void updateProcessorQuantityInDatabase(Processor selectedProcessor) {
+        String sql = "UPDATE processor SET quantity = ? WHERE id = ?";
+        try (Connection conn = dbManager.getConnection("computers");
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, selectedProcessor.getQuantity());
+            ps.setInt(2, selectedProcessor.getId());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new DatabaseException("Error updating processor quantity for ID: " + selectedProcessor, e);
+        }
+    }
+
     public List<Processor> getAllProcessors() {
         String sql = "SELECT id, name, quantity, price FROM processor";
         List<Processor> processors = new ArrayList<>();
@@ -78,6 +108,40 @@ public class ProcessorService {
             }
         } catch (SQLException e) {
             throw new DatabaseException("Error decreasing processor quantity for ID: " + processorId, e);
+        }
+    }
+
+    public void deleteProcessorById(int processorId) {
+        String sql = "DELETE FROM processor WHERE id = ?";
+        try (Connection conn = dbManager.getConnection("computers");
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, processorId);
+            int rowsDeleted = ps.executeUpdate();
+            if (rowsDeleted == 0) {
+                throw new DatabaseException("No processor found with ID: " + processorId, new SQLException());
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Error deleting processor with ID: " + processorId, e);
+        }
+    }
+
+    public void createProcessor(Processor processor) {
+        String sql = "INSERT INTO processor (name, quantity, price) VALUES (?, ?, ?)";
+        try (Connection conn = dbManager.getConnection("computers");
+             PreparedStatement ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, processor.getName());
+            ps.setInt(2, processor.getQuantity());
+            ps.setInt(3, processor.getPrice());
+            ps.executeUpdate();
+
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    int generatedId = rs.getInt(1);
+                    processor.setId(generatedId);
+                }
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Error creating processor in database", e);
         }
     }
 }
