@@ -24,6 +24,15 @@ public class VideoCardHandler {
     }
 
     public void handleVideoCardConfig() {
+        printVideoCardOptions();
+
+        System.out.println("You have selected then following video card: " + videoCardObject.getName() + "," + " Price: " + videoCardObject.getPrice() + "$");
+        System.out.println();
+        System.out.println("Please proceed further with the other options to complete your build!");
+        System.out.println();
+    }
+
+    public void printVideoCardOptions() {
         List<VideoCard> videoCards = videoService.getAllVideoCards();
 
         System.out.println("Here are the available video cards: ");
@@ -38,11 +47,24 @@ public class VideoCardHandler {
 
         int videoCardChoice = scanner.nextInt();
         videoCardObject = videoCards.get(videoCardChoice - 1);
+    }
 
-        System.out.println("You have selected then following video card: " + videoCardObject.getName() + "," + " Price: " + videoCardObject.getPrice() + "$");
+    public void printVideoCardQuantity() {
+        List<VideoCard> videoCards = videoService.getAllVideoCards();
+
         System.out.println();
-        System.out.println("Please proceed further with the other options to complete your build!");
+        System.out.println("Here are the available video cards: ");
+
+        int index = 1;
+        for (VideoCard videoCard : videoCards) {
+            System.out.println(index++ + ". Video Card: " + videoCard.getName() + " - Quantity: " + videoCard.getQuantity());
+        }
+
         System.out.println();
+        System.out.print("Please choose a video card: ");
+
+        int videoCardChoice = scanner.nextInt();
+        videoCardObject = videoCards.get(videoCardChoice - 1);
     }
 
     public VideoCard getVideoCardObject() {
