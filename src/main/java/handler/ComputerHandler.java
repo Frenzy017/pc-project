@@ -1,5 +1,6 @@
 package handler;
 
+import java.sql.SQLException;
 import java.util.*;
 
 import handler.component.ProcessorHandler;
@@ -37,11 +38,11 @@ public class ComputerHandler {
 
     private String configuredComputerPrint;
 
-    private boolean isConfigurationComplete;
+    private boolean isConfigurationComplete = false;
 
-    private boolean isProcessorConfigured;
-    private boolean isRamConfigured;
-    private boolean isVideoCardConfigured;
+    private boolean isProcessorConfigured = false;
+    private boolean isRamConfigured = false;
+    private boolean isVideoCardConfigured = false;
 
     public ComputerHandler(IMediator mediator) {
         this.mediator = mediator;
@@ -58,8 +59,6 @@ public class ComputerHandler {
 
     public void handleComputerPrint() {
         List<Computer> computers = computerService.getAllComputerProperties();
-
-        computers.sort(Comparator.comparing(Computer::getTotalPrice).reversed());
 
         System.out.println();
         System.out.println("╔═════════════════════════════════════════════════╗");
@@ -113,10 +112,7 @@ public class ComputerHandler {
                     videoCardHandler.handleVideoCardConfig();
                     isVideoCardConfigured = true;
                 }
-                case 4 -> {
-                    handleComputerBuildConfiguration();
-                    isConfigurationComplete = true;
-                }
+                case 4 -> handleComputerBuildConfiguration();
                 default -> System.out.println("Invalid selection. Please try again.");
             }
         }
@@ -131,14 +127,27 @@ public class ComputerHandler {
         int ramCapacity = ramService.getRamCapacityById(computerRamId);
         String videoCardName = videoService.getVideoCardNameById(computerVideoCardId);
 
+        int processorQuantity = processorService.getProcessorQuantityById(computerProcessorId);
+        int ramQuantity = ramService.getRamQuantityById(computerRamId);
+        int videoCardQuantity = videoService.getVideoCardQuantityById(computerVideoCardId);
+
         int processorPrice = processorService.getProcessorPriceById(computerProcessorId);
         int ramPrice = ramService.getRamPriceById(computerRamId);
         int videoCardPrice = videoService.getVideoCardPriceById(computerVideoCardId);
 
         Map<String, Object> componentDetails = new HashMap<>();
+        componentDetails.put("processorId", computerProcessorId);
+        componentDetails.put("ramId", computerRamId);
+        componentDetails.put("videoCardId", computerVideoCardId);
+
         componentDetails.put("processorName", processorName);
         componentDetails.put("ramCapacity", ramCapacity);
         componentDetails.put("videoCardName", videoCardName);
+
+        componentDetails.put("processorQuantity", processorQuantity);
+        componentDetails.put("ramQuantity", ramQuantity);
+        componentDetails.put("videoCardQuantity", videoCardQuantity);
+
         componentDetails.put("processorPrice", processorPrice);
         componentDetails.put("ramPrice", ramPrice);
         componentDetails.put("videoCardPrice", videoCardPrice);
@@ -235,6 +244,7 @@ public class ComputerHandler {
         }
 
         if (isProcessorConfigured && isRamConfigured && isVideoCardConfigured) {
+            isConfigurationComplete = true;
             System.out.println("Here is your newly configured computer: ");
             System.out.println(configuredComputerPrint);
             System.out.println();
@@ -250,7 +260,8 @@ public class ComputerHandler {
 
         System.out.print("Proceeding with regular selection, please select a computer by typing the number it is associated with: ");
 
-        int selectedComputerIndex = scanner.nextInt();
+        int selectedComputerIndex = scanner.nextInt() - 1;
+
 
         if (selectedComputerIndex >= 0 && selectedComputerIndex < computers.size()) {
             Computer computerObject = computers.get(selectedComputerIndex);
@@ -273,182 +284,6 @@ public class ComputerHandler {
         return selectedComputer;
     }
 
-    public void handleComputerModificationProperties() {
-        List<Computer> computers = computerService.getAllComputerProperties();
-
-        if (computers.isEmpty()) {
-            System.out.println("No computers available.");
-            return;
-        }
-
-        System.out.print("Please enter the name of the computer you want to modify: ");
-        String selectedName = scanner.nextLine();
-
-        utility.printModificationOptions();
-
-        Computer selectedComputer = computers
-                .stream()
-                .filter(computer -> computer.getName().equalsIgnoreCase(selectedName))
-                .findFirst()
-                .orElse(null);
-
-        if (selectedComputer == null) {
-            System.out.println("Computer not found. Please try again.");
-            return;
-        }
-
-        int modifyCommand = scanner.nextInt();
-        scanner.nextLine();
-
-//        switch (modifyCommand) {
-//            case 1 -> handleNameModification(selectedComputer);
-//            case 2 -> handleGraphicCardModification(selectedComputer);
-//            case 3 -> handleRamModification(selectedComputer);
-//            case 4 -> handleProcessorModification(selectedComputer);
-//            case 5 -> handlePriceModification(selectedComputer);
-//            default -> {
-//                utility.returnToAdminComputerOptions();
-//                return;
-//            }
-//        }
-//        computerService.updateComputerInDatabase(selectedComputer);
-//        System.out.println("Computer updated successfully!");
-    }
-
-
-//    private void handleNameModification(Computer selectedComputer) {
-//        try {
-//            System.out.print("Please type the new name for your PC: ");
-//            String newName = scanner.nextLine();
-//
-//            if (newName.isEmpty()) {
-//                System.out.println("Name cannot be empty. Please try again.");
-//            } else if (computerService.getAllComputerProperties().stream().anyMatch(computer -> computer.getName().equalsIgnoreCase(newName))) {
-//                System.out.println("A computer with this name already exists. Please choose a different name.");
-//            } else {
-//                selectedComputer.setName(newName);
-//            }
-//        } catch (Exception e) {
-//            System.out.println("An error occurred while modifying the name. Please try again.");
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    private void handleGraphicCardModification(Computer selectedComputer) {
-//        try {
-//            System.out.print("Please type the new model for your graphic card: ");
-//            String newGraphicCard = scanner.nextLine();
-//
-//            if (newGraphicCard.isEmpty()) {
-//                System.out.println("Graphic card model cannot be empty. Please try again.");
-//            } else {
-//                selectedComputer.setVideCard_id(newGraphicCard);
-//            }
-//        } catch (Exception e) {
-//            System.out.println("An error occurred while modifying the graphic card. Please try again.");
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    private void handleRamModification(Computer selectedComputer) {
-//        try {
-//            System.out.print("Please type the new size for your RAM: ");
-//            String input = scanner.nextLine();
-//
-//            int newRam = Integer.parseInt(input);
-//            if (newRam <= 0) {
-//                System.out.println("RAM size must be a positive number. Please try again.");
-//            } else {
-//                selectedComputer.setRam_id(newRam);
-//            }
-//        } catch (NumberFormatException e) {
-//            System.out.println("Invalid input for RAM size. Please enter a valid number.");
-//        } catch (Exception e) {
-//            System.out.println("An error occurred while modifying the RAM. Please try again.");
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    private void handleProcessorModification(Computer selectedComputer) {
-//        try {
-//            System.out.print("Please type the new model for your processor: ");
-//            String newProcessor = scanner.nextLine();
-//
-//            if (newProcessor.isEmpty()) {
-//                System.out.println("Processor model cannot be empty. Please try again.");
-//            } else {
-//                selectedComputer.setProcessor_id(newProcessor);
-//            }
-//        } catch (Exception e) {
-//            System.out.println("An error occurred while modifying the processor. Please try again.");
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    private void handlePriceModification(Computer selectedComputer) {
-//        try {
-//            System.out.print("Please type the new price for your computer: ");
-//            String input = scanner.nextLine();
-//
-//            int newPrice = Integer.parseInt(input);
-//            if (newPrice <= 0) {
-//                System.out.println("Price must be a positive number. Please try again.");
-//            } else {
-//                selectedComputer.setTotalPrice(newPrice);
-//            }
-//        } catch (NumberFormatException e) {
-//            System.out.println("Invalid input for price. Please enter a valid number.");
-//        } catch (Exception e) {
-//            System.out.println("An error occurred while modifying the price. Please try again.");
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    public void handleComputerCreation() {
-//        List<Computer> computers = computerService.getAllComputerProperties();
-//
-//        System.out.print("Enter computer name: ");
-//        String name = scanner.nextLine();
-//
-//        boolean nameExists = computers.stream().anyMatch(computer -> computer.getName().equalsIgnoreCase(name));
-//
-//        if (nameExists) {
-//            System.out.println("A computer with this name already exists. Please choose a different name.");
-//            return;
-//        }
-//
-//        System.out.print("Enter graphic card: ");
-//        String graphicCard = scanner.nextLine();
-//
-//        System.out.print("Enter RAM size (GB): ");
-//        int ram = Integer.parseInt(scanner.nextLine());
-//
-//        System.out.print("Enter processor: ");
-//        String processor = scanner.nextLine();
-//
-//        System.out.print("Enter price: ");
-//        int price = scanner.nextInt();
-//
-//        Computer newComputer = new Computer(0, name, graphicCard, ram, processor, price);
-//
-//        computerService.insertComputerIntoDatabase(newComputer);
-//
-//        System.out.println();
-//        System.out.println("New computer created successfully!");
-//    }
-
-    public void handleComputerDeletion() {
-        System.out.println();
-        System.out.println("Please type the name of the computer you want to delete: ");
-
-        String selectedComputerName = scanner.nextLine();
-
-        computerService.deleteComputerInDatabase(selectedComputerName);
-
-        System.out.println();
-        System.out.println("You have successfully deleted the computer!");
-    }
-
     public void handleComputerOptions() {
         System.out.println();
         System.out.print("Do you want to see additional options for the computer object?  [Yes / No] ");
@@ -465,7 +300,7 @@ public class ComputerHandler {
                     handleComputerSelection();
                     mediator.getCartHandler().handleAddCartItem();
                 }
-//                case "new" -> handleComputerCreation();
+                case "new" -> handleCreateComputer();
                 case "modify" -> handleComputerModificationProperties();
                 case "delete" -> handleComputerDeletion();
                 case "back" -> utility.returnToAdminInterface();
@@ -476,6 +311,337 @@ public class ComputerHandler {
             }
         } else if (command.equalsIgnoreCase("no")) {
             utility.returnToAdminInterface();
+        }
+    }
+
+    public void handleComputerModificationProperties() {
+        List<Computer> computers = computerService.getAllComputerProperties();
+
+        if (computers.isEmpty()) {
+            System.out.println("No computers available.");
+            return;
+        }
+
+        System.out.print("Please enter the number of the computer to modify: ");
+        int computerToModifyIndex = scanner.nextInt() - 1;
+
+        Computer computerToModify = computers.get(computerToModifyIndex);
+
+        utility.printModificationOptions();
+
+        int modifyCommand = scanner.nextInt();
+        scanner.nextLine();
+
+        switch (modifyCommand) {
+            case 1 -> handleModificationName(computerToModify);
+            case 2 -> handleModificationProcessor(computerToModify);
+            case 3 -> handleModificationRam(computerToModify);
+            case 4 -> handleModificationVideoCard(computerToModify);
+            case 5 -> handleQuantityModification();
+            default -> {
+                utility.returnToAdminComputerOptions();
+                return;
+            }
+        }
+        computerService.updateComputerInDatabase(computerToModify);
+        System.out.print("Press Enter to return to the main interface...");
+    }
+
+    private void handleModificationName(Computer computerToModify) {
+        List<Computer> computers = computerService.getAllComputerProperties();
+
+        boolean isNameValid = false;
+
+        while (!isNameValid) {
+            System.out.print("Enter the name you want to modify it to: ");
+            String computerName = scanner.nextLine();
+
+            boolean computerNameExists = computers.stream().anyMatch(computer -> computer.getName().equals(computerName));
+
+            if (computerNameExists) {
+                System.out.println("The name is already taken, please choose a different one.");
+            } else {
+                computerToModify.setName(computerName);
+                isNameValid = true;
+                System.out.println("You have successfully changed the computer's name!");
+            }
+        }
+    }
+
+    private void handleModificationProcessor(Computer computerToModify) {
+        Map<String, Object> componentDetails = getComponentDetails(computerToModify);
+
+        System.out.println("The current processor of the computer you have selected is: " + componentDetails.get("processorName"));
+        System.out.println();
+
+        boolean isNameValid = false;
+
+        while (!isNameValid) {
+            processorHandler.printProcessorOptions();
+
+            Processor processorObject = processorHandler.getProcessorObject();
+
+            System.out.println("You have selected the following processor: " + processorObject.getName() + ", Price: " + processorObject.getPrice() + "$");
+            System.out.println();
+
+            System.out.print("Do you want to update the computer with that processor? [Yes/No] ");
+
+            scanner.nextLine();
+            String command = scanner.nextLine();
+
+            if (command.equalsIgnoreCase("Yes")) {
+                computerToModify.setProcessor_id(processorObject.getId());
+                System.out.println("Processor updated!");
+                isNameValid = true;
+            } else {
+                System.out.println();
+                System.out.println("Please select a different processor.");
+            }
+        }
+    }
+
+    private void handleModificationRam(Computer computerToModify) {
+        Map<String, Object> componentDetails = getComponentDetails(computerToModify);
+
+        System.out.println("The current RAM of the computer you have selected is: " + componentDetails.get("ramCapacity") + "GB");
+        System.out.println();
+
+        boolean isNameValid = false;
+
+        while (!isNameValid) {
+            ramHandler.printRamOptions();
+
+            Ram ramObject = ramHandler.getRamObject();
+
+            System.out.println("You have selected the following RAM: " + ramObject.getCapacity() + "GB, Price: " + ramObject.getPrice() + "$");
+            System.out.println();
+
+            System.out.print("Do you want to update the computer with that RAM? [Yes/No] ");
+
+            scanner.nextLine();
+            String command = scanner.nextLine();
+
+            if (command.equalsIgnoreCase("Yes")) {
+                computerToModify.setRam_id(ramObject.getId());
+                System.out.println("RAM updated!");
+                isNameValid = true;
+            } else {
+                System.out.println();
+                System.out.println("Please select a different RAM.");
+            }
+        }
+    }
+
+    private void handleModificationVideoCard(Computer computerToModify) {
+        Map<String, Object> componentDetails = getComponentDetails(computerToModify);
+
+        System.out.println("The current video card of the computer you have selected is: " + componentDetails.get("videoCardName"));
+        System.out.println();
+
+        boolean isNameValid = false;
+
+        while (!isNameValid) {
+            videoCardHandler.printVideoCardOptions();
+
+            VideoCard videoCardObject = videoCardHandler.getVideoCardObject();
+
+            System.out.println("You have selected the following video card: " + videoCardObject.getName() + ", Price: " + videoCardObject.getPrice() + "$");
+            System.out.println();
+
+            System.out.print("Do you want to update the computer with that video card? [Yes/No] ");
+
+            scanner.nextLine();
+            String command = scanner.nextLine();
+
+            if (command.equalsIgnoreCase("Yes")) {
+                computerToModify.setVideoCard_id(videoCardObject.getId());
+                System.out.println("Video card updated!");
+                isNameValid = true;
+            } else {
+                System.out.println();
+                System.out.println("Please select a different video card.");
+            }
+        }
+    }
+
+    private void handleQuantityModification() {
+        System.out.println("Select a component to modify the quantity:");
+        System.out.println("1. Processor");
+        System.out.println("2. RAM");
+        System.out.println("3. Video Card");
+        System.out.print("Enter your choice: ");
+
+        int componentChoice = scanner.nextInt();
+        scanner.nextLine();
+
+        switch (componentChoice) {
+            case 1 -> handleQuantityProcessor();
+            case 2 -> handleQuantityRam();
+            case 3 -> handleQuantityVideoCard();
+            default -> System.out.println("Invalid choice. Please try again.");
+        }
+    }
+
+    private void handleQuantityProcessor() {
+        processorHandler.printProcessorQuantity();
+
+        Processor processorObject = processorHandler.getProcessorObject();
+
+        System.out.println("You have selected: " + "Processor: " + processorObject.getName() + " -" + " Quantity: " + processorObject.getQuantity());
+        System.out.println();
+
+        System.out.print("Please enter the new quantity value for the processor: ");
+        int quantityValue = scanner.nextInt();
+
+        processorObject.setQuantity(quantityValue);
+        processorService.updateProcessorQuantityInDatabase(processorObject);
+    }
+
+    private void handleQuantityRam() {
+        ramHandler.printRamQuantity();
+
+        Ram ramObject = ramHandler.getRamObject();
+
+        System.out.println("You have selected: " + "RAM: " + ramObject.getCapacity() + "GB -" + " Quantity: " + ramObject.getQuantity());
+        System.out.println();
+
+        System.out.print("Please enter the new quantity value for the RAM: ");
+        int quantityValue = scanner.nextInt();
+
+        ramObject.setQuantity(quantityValue);
+        ramService.updateRamQuantityInDatabase(ramObject);
+    }
+
+    private void handleQuantityVideoCard() {
+        videoCardHandler.printVideoCardQuantity();
+
+        VideoCard videoCardObject = videoCardHandler.getVideoCardObject();
+
+        System.out.println("You have selected: " + "Video Card: " + videoCardObject.getName() + " -" + " Quantity: " + videoCardObject.getQuantity());
+        System.out.println();
+
+        System.out.print("Please enter the new quantity value for the video card: ");
+        int quantityValue = scanner.nextInt();
+
+        videoCardObject.setQuantity(quantityValue);
+        videoService.updateVideoCardQuantityInDatabase(videoCardObject);
+    }
+
+    public void handleCreateComputer() {
+        String name = handleCreateName();
+
+        int processor_id = handleCreateProcessor();
+        if (processor_id == -1) {
+            System.out.println("Processor creation failed. Aborting computer creation.");
+            return;
+        }
+
+        int ram_id = handleSelectRam();
+
+        int videoCard_id = handleCreateVideoCard();
+        if (videoCard_id == -1) {
+            System.out.println("Video card creation failed. Aborting computer creation.");
+            return;
+        }
+
+        Computer computer = new Computer(0, name, processor_id, ram_id, videoCard_id, 0);
+
+        computerService.insertComputerIntoDatabase(computer);
+        System.out.println("Computer created successfully.");
+    }
+
+    private String handleCreateName() {
+        List<Computer> computers = computerService.getAllComputerProperties();
+
+        System.out.print("Enter computer name: ");
+        String computerName = scanner.nextLine();
+
+        boolean computerNameExists = computers.stream().anyMatch(computer -> computer.getName().equalsIgnoreCase(computerName));
+
+        if (computerNameExists) {
+            System.out.println("A computer with this name already exists. Please choose a different name.");
+            return computerName;
+        }
+        return computerName;
+    }
+
+    private int handleCreateProcessor() {
+        List<Processor> processors = processorService.getAllProcessors();
+
+        System.out.print("Enter processor name: ");
+        String processorName = scanner.nextLine();
+
+        boolean processorNameExists = processors.stream().anyMatch(processor -> processor.getName().equalsIgnoreCase(processorName));
+
+        if (processorNameExists) {
+            System.out.println("A processor with this name already exists. Please choose a different name.");
+        }
+
+        System.out.print("Enter quantity for the new processor: ");
+        int processorQuantity = scanner.nextInt();
+
+        System.out.print("Enter price for the new processor: ");
+        int processorPrice = scanner.nextInt();
+
+        Processor processor = new Processor(0, processorName, processorQuantity, processorPrice);
+        processorService.createProcessor(processor);
+
+        int generatedId = processor.getId();
+
+        return generatedId;
+    }
+
+    private int handleSelectRam() {
+        System.out.println();
+        ramHandler.printRamOptions();
+        Ram ramObject = ramHandler.getRamObject();
+        return ramObject.getId();
+    }
+
+    private int handleCreateVideoCard() {
+        List<VideoCard> videoCards = videoService.getAllVideoCards();
+
+        scanner.nextLine();
+        System.out.print("Enter video card name: ");
+        String videoCardName = scanner.nextLine();
+
+        boolean videoCardNameExists = videoCards.stream().anyMatch(videoCard -> videoCard.getName().equalsIgnoreCase(videoCardName));
+
+        if (videoCardNameExists) {
+            System.out.println("A video card with this name already exists. Please choose a different name.");
+            return -1;
+        }
+
+        System.out.print("Enter quantity for the new video card: ");
+        int videoCardQuantity = scanner.nextInt();
+
+        System.out.print("Enter price for the new video card: ");
+        int videoCardPrice = scanner.nextInt();
+
+
+        VideoCard videoCard = new VideoCard(0, videoCardName, videoCardQuantity, videoCardPrice);
+        videoService.createVideoCard(videoCard);
+
+        int generatedId = videoCard.getId();
+
+        return generatedId;
+    }
+
+    public void handleComputerDeletion() {
+        System.out.println();
+        System.out.print("Please select a computer to delete by typing the number it is associated with: ");
+
+        int selectedComputerIndex = scanner.nextInt() - 1;
+
+        List<Computer> computers = computerService.getAllComputerProperties();
+
+        if (selectedComputerIndex >= 0 && selectedComputerIndex < computers.size()) {
+            Computer selectedComputer = computers.get(selectedComputerIndex);
+            computerService.deleteComputerInDatabaseById(selectedComputer.getId());
+
+            System.out.println("You have successfully deleted the computer!");
+        } else {
+            System.out.println("Invalid selection. Please try again.");
         }
     }
 }
