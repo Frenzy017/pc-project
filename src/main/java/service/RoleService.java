@@ -14,7 +14,7 @@ public class RoleService {
     public void createRole(int roleId, String roleName) {
         String sql = "INSERT INTO roles (id, role_name) VALUES (?, ?)";
 
-        try (Connection conn = dbManager.getConnection("roles");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, roleId);
@@ -30,7 +30,7 @@ public class RoleService {
         String sql = "SELECT id FROM roles WHERE role_name = 'user' ";
         int roleId = 0;
 
-        try (Connection conn = dbManager.getConnection("users");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
@@ -47,7 +47,7 @@ public class RoleService {
     public String getUserRoleById(int userId) {
         String sql = "SELECT r.role_name FROM users u JOIN roles r ON u.role_id = r.id WHERE u.id = ?";
 
-        try (Connection conn = dbManager.getConnection("users");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();

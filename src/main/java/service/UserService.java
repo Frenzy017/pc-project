@@ -14,7 +14,7 @@ public class UserService {
     public void addUserToDatabase(User user) {
         String sql = "INSERT INTO users (username, password, balance, role_id) VALUES (?, ?, ?, ?)";
 
-        try (Connection usersConnection = dbManager.getConnection("users");
+        try (Connection usersConnection = dbManager.getConnection("pcstore");
              PreparedStatement ps = usersConnection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, user.getUsername());
@@ -44,7 +44,7 @@ public class UserService {
     public void removeUserFromDatabase(User user) {
         String sql = "DELETE FROM users WHERE id = ?";
 
-        try (Connection usersConnection = dbManager.getConnection("users");
+        try (Connection usersConnection = dbManager.getConnection("pcstore");
              PreparedStatement ps = usersConnection.prepareStatement(sql)) {
 
             ps.setInt(1, user.getId());
@@ -59,7 +59,7 @@ public class UserService {
         String sql = "SELECT balance FROM users WHERE id = ?";
         int balance = 0;
 
-        try (Connection conn = dbManager.getConnection("users");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, userId);
@@ -79,7 +79,7 @@ public class UserService {
         String sql = "UPDATE users SET balance = ? WHERE id = ?";
         int updatedBalance = getBalanceById(userId) + amountToDeposit;
 
-        try (Connection conn = dbManager.getConnection("users");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, updatedBalance);
@@ -95,7 +95,7 @@ public class UserService {
         String sql = "UPDATE users SET balance = ? WHERE id = ?";
         int updatedBalance = getBalanceById(userId) - amountToDeduct;
 
-        try (Connection conn = dbManager.getConnection("users");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, updatedBalance);
@@ -110,7 +110,7 @@ public class UserService {
     public void updateUserPassword(String newPassword, String username) {
         String sql = "UPDATE users SET password = ? WHERE username = ?";
 
-        try (Connection conn = dbManager.getConnection("users");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, newPassword);
@@ -125,7 +125,7 @@ public class UserService {
     public void updateUserUsername(String newUsername, String currentUsername) {
         String sql = "UPDATE users SET username = ? WHERE username = ?";
 
-        try (Connection conn = dbManager.getConnection("users");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, newUsername);
@@ -142,7 +142,7 @@ public class UserService {
 
         boolean usersExist = false;
 
-        try (Connection conn = dbManager.getConnection("users");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
@@ -159,7 +159,7 @@ public class UserService {
     public boolean isUsernamePresent(String username) {
         String sql = "SELECT COUNT(*) FROM users WHERE username = ?";
 
-        try (Connection conn = dbManager.getConnection("users");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, username);
             ResultSet rs = ps.executeQuery();
@@ -177,7 +177,7 @@ public class UserService {
 
         boolean validLogin = false;
 
-        try (Connection conn = dbManager.getConnection("users");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, usernameToLogin);
@@ -198,7 +198,7 @@ public class UserService {
         List<User> users = new ArrayList<>();
         String sql = "SELECT id, username, password, balance, role_id FROM users";
 
-        try (Connection conn = dbManager.getConnection("users");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ResultSet rs = ps.executeQuery();
 
@@ -223,7 +223,7 @@ public class UserService {
         String sql = "SELECT id FROM users WHERE username = ?";
         int userId = 0;
 
-        try (Connection conn = dbManager.getConnection("users");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, username);

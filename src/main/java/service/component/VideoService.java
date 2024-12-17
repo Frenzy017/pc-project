@@ -17,7 +17,7 @@ public class VideoService {
     public String getVideoCardNameById(int videoCardId) {
         String sql = "SELECT name FROM videoCard WHERE id = ?";
         String videoCard = null;
-        try (Connection conn = dbManager.getConnection("computers");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, videoCardId);
             ResultSet rs = ps.executeQuery();
@@ -33,7 +33,7 @@ public class VideoService {
     public int getVideoCardPriceById(int videoCardId) {
         String sql = "SELECT price FROM videoCard WHERE id = ?";
         int price = 0;
-        try (Connection conn = dbManager.getConnection("computers");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, videoCardId);
             ResultSet rs = ps.executeQuery();
@@ -49,7 +49,7 @@ public class VideoService {
     public int getVideoCardQuantityById(int videoCardId) {
         String sql = "SELECT quantity FROM videoCard WHERE id =?";
         int quantity = 0;
-        try (Connection conn = dbManager.getConnection("computers");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, videoCardId);
             ResultSet rs = ps.executeQuery();
@@ -65,7 +65,7 @@ public class VideoService {
 
     public void updateVideoCardQuantityInDatabase(VideoCard selectedVideoCard) {
         String sql = "UPDATE videoCard SET quantity = ? WHERE id = ?";
-        try (Connection conn = dbManager.getConnection("computers");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, selectedVideoCard.getQuantity());
@@ -79,7 +79,7 @@ public class VideoService {
     public List<VideoCard> getAllVideoCards() {
         String sql = "SELECT id, name, quantity, price FROM videoCard";
         List<VideoCard> videoCards = new ArrayList<>();
-        try (Connection conn = dbManager.getConnection("computers");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
@@ -100,7 +100,7 @@ public class VideoService {
     public void decreaseVideoCardQuantityByOne(int videoCardId) {
         String sql = "UPDATE videoCard SET quantity = quantity - 1 WHERE id = ?";
 
-        try (Connection conn = dbManager.getConnection("computers");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, videoCardId);
             int rowsUpdated = ps.executeUpdate();
@@ -114,7 +114,7 @@ public class VideoService {
 
     public void deleteVideoCardById(int videoCardId) {
         String sql = "DELETE FROM video_card WHERE id = ?";
-        try (Connection conn = dbManager.getConnection("computers");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, videoCardId);
             int rowsDeleted = ps.executeUpdate();
@@ -128,7 +128,7 @@ public class VideoService {
 
     public void createVideoCard(VideoCard videoCard) {
         String sql = "INSERT INTO videoCard (name, quantity, price) VALUES (?, ?, ?)";
-        try (Connection conn = dbManager.getConnection("computers");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, videoCard.getName());
             ps.setInt(2, videoCard.getQuantity());

@@ -17,7 +17,7 @@ public class RamService {
     public int getRamCapacityById(int ramId) {
         String sql = "SELECT capacity FROM ram WHERE id = ?";
         int capacity = 0;
-        try (Connection conn = dbManager.getConnection("computers");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, ramId);
             ResultSet rs = ps.executeQuery();
@@ -33,7 +33,7 @@ public class RamService {
     public int getRamPriceById(int ramId) {
         String sql = "SELECT price FROM ram WHERE id = ?";
         int price = 0;
-        try (Connection conn = dbManager.getConnection("computers");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, ramId);
             ResultSet rs = ps.executeQuery();
@@ -49,7 +49,7 @@ public class RamService {
     public int getRamQuantityById(int ramId) {
         String sql = "SELECT quantity FROM ram WHERE id =?";
         int quantity = 0;
-        try (Connection conn = dbManager.getConnection("computers");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, ramId);
             ResultSet rs = ps.executeQuery();
@@ -65,7 +65,7 @@ public class RamService {
 
     public void updateRamQuantityInDatabase(Ram selectedRam) {
         String sql = "UPDATE ram SET quantity = ? WHERE id = ?";
-        try (Connection conn = dbManager.getConnection("computers");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, selectedRam.getQuantity());
@@ -79,7 +79,7 @@ public class RamService {
     public List<Ram> getAllRam() {
         String sql = "SELECT id, capacity, quantity, price FROM ram";
         List<Ram> ram = new ArrayList<>();
-        try (Connection conn = dbManager.getConnection("computers");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
@@ -100,7 +100,7 @@ public class RamService {
     public void decreaseRamQuantityByOne(int ramId) {
         String sql = "UPDATE ram SET quantity = quantity - 1 WHERE id = ?";
 
-        try (Connection conn = dbManager.getConnection("computers");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, ramId);
             int rowsUpdated = ps.executeUpdate();
@@ -114,7 +114,7 @@ public class RamService {
 
     public void deleteRamById(int ramId) {
         String sql = "DELETE FROM ram WHERE id = ?";
-        try (Connection conn = dbManager.getConnection("computers");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, ramId);
             int rowsDeleted = ps.executeUpdate();

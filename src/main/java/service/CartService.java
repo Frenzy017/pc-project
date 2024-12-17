@@ -18,7 +18,7 @@ public class CartService {
     private int cartId;
 
     public void createCartForUser(int userId) {
-        try (Connection conn = dbManager.getConnection("users")) {
+        try (Connection conn = dbManager.getConnection("pcstore")) {
             String sql = "INSERT INTO Cart (userId) VALUES (?)";
             try (PreparedStatement ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
                 ps.setInt(1, userId);
@@ -35,7 +35,7 @@ public class CartService {
     }
 
     public void addToCart(CartItem cartItem) {
-        try (Connection conn = dbManager.getConnection("users")) {
+        try (Connection conn = dbManager.getConnection("pcstore")) {
             String sql = "INSERT INTO CartItem (cartId, computerId,  computerPrice) VALUES (?, ?,  ?)";
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
                 ps.setInt(1, cartItem.getCartId());
@@ -50,7 +50,7 @@ public class CartService {
 
     public boolean userHasCart(int userId) {
         String sql = "SELECT COUNT(*) FROM cart WHERE userid = ?";
-        try (Connection conn = dbManager.getConnection("users");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, userId);
             ResultSet resultSet = ps.executeQuery();
@@ -65,7 +65,7 @@ public class CartService {
 
     public int getCartIdByUserId(int userId) {
         String sql = "SELECT cartId FROM Cart WHERE userId = ?";
-        try (Connection conn = dbManager.getConnection("users");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, userId);
             ResultSet resultSet = ps.executeQuery();
@@ -85,7 +85,7 @@ public class CartService {
 
         String sqlCartItems = "SELECT computerId FROM cartItem WHERE cartId = ?";
 
-        try (Connection conn = dbManager.getConnection("users");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sqlCartItems)) {
             ps.setInt(1, cartId);
             ResultSet rs = ps.executeQuery();
@@ -132,7 +132,7 @@ public class CartService {
 
         String sqlCartItems = "SELECT computerId FROM cartItem WHERE cartId = ?";
 
-        try (Connection conn = dbManager.getConnection("users");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sqlCartItems)) {
             ps.setInt(1, cartId);
             ResultSet rs = ps.executeQuery();
@@ -147,7 +147,7 @@ public class CartService {
 
         String sqlDeleteCartItem = "DELETE FROM cartItem WHERE cartId = ? AND computerId = ?";
 
-        try (Connection conn = dbManager.getConnection("users")) {
+        try (Connection conn = dbManager.getConnection("pcstore")) {
             for (String computerId : computerIds) {
                 try (PreparedStatement ps = conn.prepareStatement(sqlDeleteCartItem)) {
                     ps.setInt(1, cartId);

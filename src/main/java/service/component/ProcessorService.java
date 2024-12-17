@@ -17,7 +17,7 @@ public class ProcessorService {
     public String getProcessorNameById(int processorId) {
         String sql = "SELECT name FROM processor WHERE id = ?";
         String processor = null;
-        try (Connection conn = dbManager.getConnection("computers");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, processorId);
             ResultSet rs = ps.executeQuery();
@@ -33,7 +33,7 @@ public class ProcessorService {
     public int getProcessorPriceById(int processorId) {
         String sql = "SELECT price FROM processor WHERE id = ?";
         int price = 0;
-        try (Connection conn = dbManager.getConnection("computers");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, processorId);
             ResultSet rs = ps.executeQuery();
@@ -49,7 +49,7 @@ public class ProcessorService {
     public int getProcessorQuantityById(int processorId) {
         String sql = "SELECT quantity FROM processor WHERE id =?";
         int quantity = 0;
-        try (Connection conn = dbManager.getConnection("computers");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, processorId);
             ResultSet rs = ps.executeQuery();
@@ -65,7 +65,7 @@ public class ProcessorService {
 
     public void updateProcessorQuantityInDatabase(Processor selectedProcessor) {
         String sql = "UPDATE processor SET quantity = ? WHERE id = ?";
-        try (Connection conn = dbManager.getConnection("computers");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, selectedProcessor.getQuantity());
@@ -79,7 +79,7 @@ public class ProcessorService {
     public List<Processor> getAllProcessors() {
         String sql = "SELECT id, name, quantity, price FROM processor";
         List<Processor> processors = new ArrayList<>();
-        try (Connection conn = dbManager.getConnection("computers");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
@@ -99,7 +99,7 @@ public class ProcessorService {
     public void decreaseProcessorQuantityByOne(int processorId) {
         String sql = "UPDATE processor SET quantity = quantity - 1 WHERE id = ?";
 
-        try (Connection conn = dbManager.getConnection("computers");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, processorId);
             int rowsUpdated = ps.executeUpdate();
@@ -113,7 +113,7 @@ public class ProcessorService {
 
     public void deleteProcessorById(int processorId) {
         String sql = "DELETE FROM processor WHERE id = ?";
-        try (Connection conn = dbManager.getConnection("computers");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, processorId);
             int rowsDeleted = ps.executeUpdate();
@@ -127,7 +127,7 @@ public class ProcessorService {
 
     public void createProcessor(Processor processor) {
         String sql = "INSERT INTO processor (name, quantity, price) VALUES (?, ?, ?)";
-        try (Connection conn = dbManager.getConnection("computers");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, processor.getName());
             ps.setInt(2, processor.getQuantity());

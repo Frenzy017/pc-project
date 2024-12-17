@@ -16,7 +16,7 @@ public class ComputerService {
         String sql = "INSERT INTO computers (name, processor_id, ram_id, videoCard_id, totalPrice) VALUES (?, ?, ?, ?, ?)";
         int generatedId = 0;
 
-        try (Connection computersConnection = dbManager.getConnection("computers");
+        try (Connection computersConnection = dbManager.getConnection("pcstore");
              PreparedStatement ps = computersConnection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, computer.getName());
@@ -41,7 +41,7 @@ public class ComputerService {
     public void updateComputerInDatabase(Computer computer) {
         String sql = "UPDATE computers SET name = ?, processor_id = ?, ram_id = ?, videoCard_id = ?, totalPrice = ? WHERE id = ?";
 
-        try (Connection conn = dbManager.getConnection("computers");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, computer.getName());
@@ -60,7 +60,7 @@ public class ComputerService {
     public void updateComputerPriceInDatabase(Computer computer, int buildPrice) {
         String sql = "UPDATE computers SET totalPrice = ? WHERE id = ?";
 
-        try (Connection conn = dbManager.getConnection("computers");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, buildPrice);
@@ -75,7 +75,7 @@ public class ComputerService {
     public void deleteComputerInDatabaseByName(String name) {
         String sql = "DELETE FROM computers WHERE id = ?";
 
-        try (Connection conn = dbManager.getConnection("computers");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, name);
@@ -88,7 +88,7 @@ public class ComputerService {
     public void deleteComputerInDatabaseById(int computerId) {
         String sql = "DELETE FROM computers WHERE id = ?";
 
-        try (Connection conn = dbManager.getConnection("computers");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, computerId);
             ps.executeUpdate();
@@ -102,7 +102,7 @@ public class ComputerService {
         List<Computer> computers = new ArrayList<>();
         String sql = "SELECT id, name, processor_id, ram_id, videoCard_id, totalPrice FROM computers";
 
-        try (Connection conn = dbManager.getConnection("computers");
+        try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ResultSet rs = ps.executeQuery();
 
