@@ -100,7 +100,7 @@ public class CartService {
 
         String sqlComputers = "SELECT id, name, processor_id, ram_id, videoCard_id, totalPrice FROM computers WHERE id = ?";
 
-        try (Connection conn = dbManager.getConnection("computers")) {
+        try (Connection conn = dbManager.getConnection("pcstore")) {
             for (String computerId : computerIds) {
                 try (PreparedStatement ps = conn.prepareStatement(sqlComputers)) {
                     ps.setString(1, computerId);
