@@ -494,10 +494,14 @@ public class ComputerHandler {
         System.out.println();
 
         System.out.print("Please enter the new quantity value for the processor: ");
+
         int quantityValue = scanner.nextInt();
 
         processorObject.setQuantity(quantityValue);
         processorService.updateProcessorQuantityInDatabase(processorObject);
+
+        System.out.println("Processor quantity successfully updated!");
+        System.out.println();
     }
 
     private void handleQuantityRam() {
@@ -513,6 +517,9 @@ public class ComputerHandler {
 
         ramObject.setQuantity(quantityValue);
         ramService.updateRamQuantityInDatabase(ramObject);
+
+        System.out.println("Ram quantity successfully updated!");
+        System.out.println();
     }
 
     private void handleQuantityVideoCard() {
@@ -528,7 +535,12 @@ public class ComputerHandler {
 
         videoCardObject.setQuantity(quantityValue);
         videoService.updateVideoCardQuantityInDatabase(videoCardObject);
+
+        System.out.println("Video card quantity successfully updated!");
+        System.out.println();
     }
+
+
 
     public void handleCreateComputer() {
         String name = handleCreateName();
