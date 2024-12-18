@@ -248,6 +248,9 @@ public class ComputerHandler {
             System.out.println("Here is your newly configured computer: ");
             System.out.println(configuredComputerPrint);
             System.out.println();
+            isProcessorConfigured = false;
+            isRamConfigured = false;
+            isVideoCardConfigured = false;
         }
     }
 
