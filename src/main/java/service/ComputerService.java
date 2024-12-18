@@ -73,7 +73,7 @@ public class ComputerService {
     }
 
     public void deleteComputerInDatabaseByName(String name) {
-        String sql = "DELETE FROM computers WHERE id = ?";
+        String sql = "DELETE FROM computers WHERE name = ?";
 
         try (Connection conn = dbManager.getConnection("pcstore");
              PreparedStatement ps = conn.prepareStatement(sql)) {
