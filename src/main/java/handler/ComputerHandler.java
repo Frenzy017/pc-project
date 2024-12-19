@@ -38,7 +38,7 @@ public class ComputerHandler {
 
     private String configuredComputerPrint;
 
-    private boolean isConfigurationComplete = false;
+    private boolean isConfigurationComplete;
 
     private boolean isProcessorConfigured = false;
     private boolean isRamConfigured = false;
@@ -74,6 +74,7 @@ public class ComputerHandler {
 
     public void handleComputerSelection() {
         System.out.print("Do you want to create your own custom computer configuration? [Yes/No] ");
+
         String command = scanner.nextLine();
         System.out.println();
 
@@ -85,6 +86,8 @@ public class ComputerHandler {
     }
 
     public void handleComputerCustomConfiguration() {
+        isConfigurationComplete = false;
+
         while (!isConfigurationComplete) {
             System.out.println("╭──────────────────────────────────────────╮");
             System.out.println("│  Please choose a configuration option    │");
@@ -235,9 +238,6 @@ public class ComputerHandler {
         if (notConfiguredComponents.isEmpty()) {
             selectedComputer = new Computer(0, "customComputer", processorObject.getId(), ramObject.getId(), videoCardObject.getId(), totalPrice);
             configuredComputerPrint = "CPU: " + processorObject.getName() + ", " + "RAM: " + ramObject.getCapacity() + "GB, " + "GPU: " + videoCardObject.getName() + ", " + "Price: " + totalPrice + "$";
-
-            int computerId = computerService.insertComputerIntoDatabase(selectedComputer);
-            selectedComputer.setId(computerId);
         } else {
             configuredComponents.forEach(System.out::println);
             notConfiguredComponents.forEach(System.out::println);
@@ -539,8 +539,6 @@ public class ComputerHandler {
         System.out.println("Video card quantity successfully updated!");
         System.out.println();
     }
-
-
 
     public void handleCreateComputer() {
         String name = handleCreateName();
