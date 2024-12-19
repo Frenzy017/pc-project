@@ -105,12 +105,15 @@ public class CartHandler {
         String command = scanner.nextLine();
 
         if (command.equalsIgnoreCase("Yes")) {
+            int computerId = computerService.insertComputerIntoDatabase(selectedComputer);
+            selectedComputer.setId(computerId);
+
             int cartId = getCartIdForCurrentUser();
-            int computerId = selectedComputer.getId();
+            int generatedId = selectedComputer.getId();
 
             double computerPrice = selectedComputer.getTotalPrice();
 
-            cartService.addToCart(new CartItem(cartId, computerId, computerPrice));
+            cartService.addToCart(new CartItem(cartId, generatedId, computerPrice));
 
             System.out.println();
             System.out.println("You have successfully added the selected computer to your cart!");
