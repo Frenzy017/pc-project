@@ -2,6 +2,7 @@ package handler.component;
 
 import mediator.IMediator;
 
+import model.component.Processor;
 import model.component.Ram;
 import service.component.RamService;
 
@@ -69,5 +70,9 @@ public class RamHandler {
 
     public Ram getRamObject() {
         return ramObject;
+    }
+
+    public void setRamObject(Ram ramObject) {
+        this.ramObject = ramObject;
     }
 }

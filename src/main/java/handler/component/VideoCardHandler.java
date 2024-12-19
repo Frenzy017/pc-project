@@ -70,4 +70,8 @@ public class VideoCardHandler {
     public VideoCard getVideoCardObject() {
         return videoCardObject;
     }
+
+    public void setVideoCardObject(VideoCard videoCardObject) {
+        this.videoCardObject = videoCardObject;
+    }
 }

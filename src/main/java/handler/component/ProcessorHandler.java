@@ -70,4 +70,8 @@ public class ProcessorHandler {
     public Processor getProcessorObject() {
         return processorObject;
     }
+
+    public void setProcessorObject(Processor processorObject) {
+       this.processorObject = processorObject;
+    }
 }
