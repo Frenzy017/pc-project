@@ -20,7 +20,7 @@ import java.util.Scanner;
 
 public class Mediator implements IMediator {
     private final Utility utility = new Utility(this);
-    private final Scanner scanner = new Scanner(System.in);
+    private static final Scanner scanner = new Scanner(System.in);
 
     private Store store;
 
@@ -32,14 +32,14 @@ public class Mediator implements IMediator {
     private RamHandler ramHandler;
     private VideoCardHandler videoCardHandler;
 
-    private final UserService userService = new UserService();
-    private final ComputerService computerService = new ComputerService();
-    private final CartService cartService = new CartService();
-    private final RoleService roleService = new RoleService();
+    private static final UserService userService = new UserService();
+    private static final ComputerService computerService = new ComputerService();
+    private static final CartService cartService = new CartService();
+    private static final RoleService roleService = new RoleService();
 
-    private final ProcessorService processorService = new ProcessorService();
-    private final RamService ramService = new RamService();
-    private final VideoService videoService = new VideoService();
+    private static final ProcessorService processorService = new ProcessorService();
+    private static final RamService ramService = new RamService();
+    private static final VideoService videoService = new VideoService();
 
     @Override
     public void notify(Object sender, String event) {
